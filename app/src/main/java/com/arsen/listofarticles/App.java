@@ -5,6 +5,7 @@ import android.support.multidex.MultiDexApplication;
 import com.arsen.listofarticles.dagger.component.DaggerNetComponent;
 import com.arsen.listofarticles.dagger.component.NetComponent;
 import com.arsen.listofarticles.dagger.module.NetworkModule;
+import com.arsen.listofarticles.util.Constants;
 
 public class App extends MultiDexApplication {
     private NetComponent netComponent;
@@ -15,7 +16,7 @@ public class App extends MultiDexApplication {
 
         netComponent = DaggerNetComponent.
                 builder().
-                networkModule(new NetworkModule("")).
+                networkModule(new NetworkModule(Constants.BASE_URL)).
                 build();
     }
 
