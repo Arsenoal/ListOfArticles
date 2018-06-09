@@ -15,7 +15,7 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/article_recycler_item_header_height"
             android:background="@color/app_color_green"
             android:paddingBottom="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -24,25 +24,25 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/article_category"
-                android:layout_width="match_parent"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/app_margin_end"
                 android:layout_marginStart="@dimen/app_margin_start"
                 android:layout_marginTop="@dimen/app_margin_top"
                 android:gravity="start"
                 android:textColor="@color/app_color_white"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/article_title"
-                android:layout_width="wrap_content"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/app_margin_end"
                 android:layout_marginStart="@dimen/app_margin_start"
                 android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:textColor="@color/app_color_white"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
