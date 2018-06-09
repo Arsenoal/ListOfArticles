@@ -5,8 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.interfaces.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
+import com.arsen.listofarticles.util.Constants;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ArticlesPresenter {
+    private static final Logger LOGGER = Logger.getLogger(ArticlesPresenter.class.getSimpleName());
+
     private ArticlesView articlesView;
     private ArticlesModel articlesModel;
 
@@ -25,10 +35,32 @@ public class ArticlesPresenter {
     }
 
     public void startLoading() {
-
+        loadArticles();
     }
 
     private void loadArticles() {
-        //TODO get articles from model and provide to view
+        articlesModel.loadArticles(
+                articlesModel.
+                        getFilmsService().
+                        getFilms(
+                                "12%20years%20a%20slave",
+                                "film/film,tone/reviews",
+                                "2010-01-01",
+                                "starRating,headline,thumbnail,short-url",
+                                Constants.API_KEY,
+                                "relevance",
+                                1).
+                        subscribeOn(Schedulers.io()).
+                        observeOn(AndroidSchedulers.mainThread()).
+                        map(filmsResponse -> filmsResponse).
+                        subscribe(
+                                filmsResponse -> {
+                                    articlesView.addArticles(filmsResponse.getResponse().getFields());
+                                },
+                                error -> {
+                                    //TODO handle is left for future, for now just log what went wrong
+                                    LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "error cause on getting films: %s", error.getCause()));
+                                }
+                        ));
     }
 }

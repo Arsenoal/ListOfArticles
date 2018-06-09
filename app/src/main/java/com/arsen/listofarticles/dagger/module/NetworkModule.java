@@ -1,9 +1,8 @@
 package com.arsen.listofarticles.dagger.module;
 
-import android.app.Activity;
 import android.support.multidex.MultiDexApplication;
 
-import com.arsen.listofarticles.rest.GeneralService;
+import com.arsen.listofarticles.rest.services.FilmsService;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,14 +53,14 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    GeneralService provideGeneralService(Gson gson, OkHttpClient okHttpClient) {
+    FilmsService provideGeneralService(Gson gson, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(mBaseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
                 .build()
-                .create(GeneralService.class);
+                .create(FilmsService.class);
     }
 
     @Provides

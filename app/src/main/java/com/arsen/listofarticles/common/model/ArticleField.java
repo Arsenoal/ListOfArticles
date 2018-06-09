@@ -1,6 +1,6 @@
 package com.arsen.listofarticles.common.model;
 
-public interface ArticleFields {
+public interface ArticleField {
     String getTitle();
     String getThumbnail();
 }

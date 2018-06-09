@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.arsen.listofarticles.R;
-import com.arsen.listofarticles.common.model.ArticleFields;
+import com.arsen.listofarticles.common.model.ArticleField;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -18,8 +18,12 @@ import java.util.ArrayList;
 
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticleHolder> {
 
-    private ArrayList<ArticleFields> articles;
+    private ArrayList<ArticleField> articles;
     private AppCompatActivity appCompatActivity;
+
+    public ArticlesAdapter() {
+        articles = new ArrayList<>();
+    }
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -38,7 +42,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
             articleTitle = view.findViewById(R.id.article_title);
         }
 
-        void bind(ArticleFields article) {
+        void bind(ArticleField article) {
             if (!appCompatActivity.isDestroyed())
                 Glide.
                         with(appCompatActivity).
@@ -67,10 +71,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         holder.bind(articles.get(position));
     }
 
-    public void addArticles(ArrayList<ArticleFields> newArticles) {
-        if (articles == null)
-            articles = new ArrayList<>();
-
+    public void addArticles(ArrayList<? extends ArticleField> newArticles) {
         articles.addAll(newArticles);
         notifyItemRangeChanged(articles.size() - newArticles.size(), newArticles.size());
     }

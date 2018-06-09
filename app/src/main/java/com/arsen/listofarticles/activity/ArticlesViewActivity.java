@@ -5,13 +5,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
+import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.common.adapter.ArticlesAdapter;
-import com.arsen.listofarticles.common.model.ArticleFields;
+import com.arsen.listofarticles.common.model.ArticleField;
 import com.arsen.listofarticles.custom_layout_managers.WrapContentLinearLayoutManager;
 import com.arsen.listofarticles.interfaces.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.presenters.ArticlesPresenter;
+import com.arsen.listofarticles.rest.models.FilmsResponse;
 
 import java.util.ArrayList;
 
@@ -37,13 +39,15 @@ public class ArticlesViewActivity extends AppCompatActivity implements ArticlesV
     }
 
     private void initPresenter() {
-        ArticlesModel articlesModel = new ArticlesModel();
+        ArticlesModel articlesModel = new ArticlesModel(this);
         this.articlesPresenter = new ArticlesPresenter(articlesModel);
         articlesPresenter.attachView(this);
+
+        articlesPresenter.startLoading();
     }
 
     @Override
-    public void addArticles(ArrayList<ArticleFields> articles) {
+    public void addArticles(ArrayList<? extends ArticleField> articles) {
         articlesAdapter.addArticles(articles);
     }
 
