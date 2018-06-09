@@ -35,10 +35,6 @@ public class FilmsResponse {
             private String sectionName;
 
             @Expose
-            @SerializedName("fields")
-            private Field fields;
-
-            @Expose
             @SerializedName("isHosted")
             private boolean isHosted;
 
@@ -50,33 +46,9 @@ public class FilmsResponse {
             @SerializedName("pillarName")
             private String pillarName;
 
-            public class Field implements ArticleField {
-                @Expose
-                @SerializedName("headline")
-                private String headline;
-
-                @Expose
-                @SerializedName("shortUrl")
-                private String shortUrl;
-
-                @Expose
-                @SerializedName("thumbnail")
-                private String thumbnail;
-
-                public String getShortUrl() {
-                    return shortUrl;
-                }
-
-                @Override
-                public String getTitle() {
-                    return headline;
-                }
-
-                @Override
-                public String getThumbnail() {
-                    return thumbnail;
-                }
-            }
+            @Expose
+            @SerializedName("fields")
+            private Field field;
 
             public String getId() {
                 return id;
@@ -95,7 +67,7 @@ public class FilmsResponse {
             }
 
             public Field getField() {
-                return fields;
+                return field;
             }
 
             public boolean isHosted() {
@@ -109,6 +81,46 @@ public class FilmsResponse {
             public String getPillarName() {
                 return pillarName;
             }
+
+            public class Field implements ArticleField {
+                @Expose
+                @SerializedName("headline")
+                private String headline;
+
+                @Expose
+                @SerializedName("shortUrl")
+                private String shortUrl;
+
+                @Expose
+                @SerializedName("thumbnail")
+                private String thumbnail;
+
+                private String category;
+
+                public String getShortUrl() {
+                    return shortUrl;
+                }
+
+                @Override
+                public String getTitle() {
+                    return headline;
+                }
+
+                @Override
+                public String getThumbnail() {
+                    return thumbnail;
+                }
+
+                @Override
+                public String getCategory() {
+                    return this.category;
+                }
+
+                public void setCategory(String category) {
+                    this.category = category;
+                }
+            }
+
         }
 
         public ArrayList<Film> getFilms() {
@@ -118,9 +130,11 @@ public class FilmsResponse {
         public ArrayList<Film.Field> getFields() {
             ArrayList<Film.Field> fields = new ArrayList<>();
 
-            for(Film film: films)
-                fields.add(film.getField());
-
+            for(Film film: films) {
+                Film.Field field = film.getField();
+                field.setCategory(film.getSectionName());
+                fields.add(field);
+            }
             return fields;
         }
     }

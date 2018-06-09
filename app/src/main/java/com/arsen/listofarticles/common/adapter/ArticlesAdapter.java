@@ -1,6 +1,8 @@
 package com.arsen.listofarticles.common.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -11,8 +13,12 @@ import android.view.ViewGroup;
 
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.common.model.ArticleField;
+import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.BaseTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 
@@ -20,9 +26,11 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
 
     private ArrayList<ArticleField> articles;
     private AppCompatActivity appCompatActivity;
+    private final int DP_150;
 
     public ArticlesAdapter() {
         articles = new ArrayList<>();
+        DP_150 = ScreenHelper.convertDpToPixel(150);
     }
 
     @Override
@@ -32,14 +40,16 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     }
 
     class ArticleHolder extends RecyclerView.ViewHolder {
-        AppCompatImageView articleImage;
+        AppCompatTextView articleCategory;
         AppCompatTextView articleTitle;
+        AppCompatImageView articleImage;
 
         public ArticleHolder(View view) {
             super(view);
 
             articleImage = view.findViewById(R.id.article_img);
             articleTitle = view.findViewById(R.id.article_title);
+            articleCategory = view.findViewById(R.id.article_category);
         }
 
         void bind(ArticleField article) {
@@ -48,12 +58,28 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
                         with(appCompatActivity).
                         load(article.getThumbnail()).
                         apply(RequestOptions.centerCropTransform()).
-                        into(articleImage);
+                        into(new BaseTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                articleImage.setImageDrawable(resource);
+                            }
+
+                            @Override
+                            public void getSize(@NonNull SizeReadyCallback cb) {
+                                cb.onSizeReady(SIZE_ORIGINAL, DP_150);
+                            }
+
+                            @Override
+                            public void removeCallback(@NonNull SizeReadyCallback cb) {
+
+                            }
+                        });
 
             String title = article.getTitle();
+            String category = article.getCategory();
 
-            if (title != null)
-                articleTitle.setText(title);
+            if (title != null) articleTitle.setText(title);
+            if (category != null) articleCategory.setText(category);
 
         }
     }

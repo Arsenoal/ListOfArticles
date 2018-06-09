@@ -47,8 +47,8 @@ public class ArticlesPresenter {
                                 "film/film,tone/reviews",
                                 "2010-01-01",
                                 "starRating,headline,thumbnail,short-url",
-                                Constants.API_KEY,
                                 "relevance",
+                                Constants.API_KEY,
                                 1).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
