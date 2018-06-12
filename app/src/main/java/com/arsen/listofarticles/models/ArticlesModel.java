@@ -1,6 +1,7 @@
 package com.arsen.listofarticles.models;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 
@@ -25,8 +26,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class ArticlesModel {
-
-    private DbHelper dbHelper;
+    @Inject
+    DbHelper dbHelper;
 
     @Inject
     CompositeDisposable compositeDisposable;
@@ -34,10 +35,8 @@ public class ArticlesModel {
     @Inject
     FilmsService filmsService;
 
-    public ArticlesModel(AppCompatActivity appCompatActivity, DbHelper dbHelper) {
-        ((App) appCompatActivity.getApplication()).getNetComponent().inject(this);
-
-        this.dbHelper = dbHelper;
+    public ArticlesModel(Context context) {
+        ((App) context).getNetComponent().inject(this);
     }
 
     public void loadArticles(Disposable disposable) {

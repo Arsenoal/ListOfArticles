@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
+import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.common.adapter.ArticlesAdapter;
 import com.arsen.listofarticles.common.model.ArticleField;
 import com.arsen.listofarticles.custom_layout_managers.WrapContentLinearLayoutManager;
 import com.arsen.listofarticles.database.DbHelper;
-import com.arsen.listofarticles.interfaces.ArticlesView;
+import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.listeners.EndlessRecyclerViewScrollListener;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.presenters.ArticlesPresenter;
@@ -24,6 +25,8 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+
 public class ArticlesViewActivity
         extends AppCompatActivity implements ArticlesView {
 
@@ -32,7 +35,13 @@ public class ArticlesViewActivity
     @BindView(R.id.articles_list)
     RecyclerView articlesList;
 
-    private ArticlesPresenter articlesPresenter;
+    @Inject
+    DbHelper dbHelper;
+    @Inject
+    ArticlesModel articlesModel;
+    @Inject
+    ArticlesPresenter articlesPresenter;
+
     private ArticlesAdapter articlesAdapter;
     private WrapContentLinearLayoutManager wrapContentLinearLayoutManager;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
@@ -42,6 +51,7 @@ public class ArticlesViewActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        ((App)getApplication()).getNetComponent().inject(this);
 
         initArticlesList();
 
@@ -51,12 +61,9 @@ public class ArticlesViewActivity
     }
 
     private void initPresenter() {
-        DbHelper dbHelper = new DbHelper(this);
-        ArticlesModel articlesModel = new ArticlesModel(this, dbHelper);
-        this.articlesPresenter = new ArticlesPresenter(articlesModel);
-        articlesPresenter.attachView(this);
+        this.articlesPresenter.attachView(this);
 
-        articlesPresenter.startLoading(1);
+        this.articlesPresenter.startLoading();
     }
 
     @Override
@@ -86,7 +93,7 @@ public class ArticlesViewActivity
 
     @Override
     public Context provideContext() {
-        return this;
+        return this.getApplicationContext();
     }
 
     @Override

@@ -7,7 +7,10 @@ import android.support.multidex.MultiDexApplication;
 import com.arsen.listofarticles.dagger.component.DaggerNetComponent;
 import com.arsen.listofarticles.dagger.component.NetComponent;
 import com.arsen.listofarticles.dagger.module.AppModule;
+import com.arsen.listofarticles.dagger.module.DBModule;
+import com.arsen.listofarticles.dagger.module.ModelsModule;
 import com.arsen.listofarticles.dagger.module.NetworkModule;
+import com.arsen.listofarticles.dagger.module.PresentersModule;
 import com.arsen.listofarticles.util.Constants;
 
 public class App extends MultiDexApplication {
@@ -27,6 +30,9 @@ public class App extends MultiDexApplication {
                 builder().
                 networkModule(new NetworkModule(Constants.BASE_URL)).
                 appModule(new AppModule(this)).
+                dBModule(new DBModule(getApplicationContext())).
+                modelsModule(new ModelsModule(getApplicationContext())).
+                presentersModule(new PresentersModule()).
                 build();
     }
 

@@ -1,4 +1,4 @@
-package com.arsen.listofarticles.interfaces;
+package com.arsen.listofarticles.interfaces.view;
 
 import android.content.Context;
 

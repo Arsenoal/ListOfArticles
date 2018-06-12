@@ -1,12 +1,11 @@
 package com.arsen.listofarticles.presenters;
 
 import android.content.ContentValues;
-import android.support.v7.app.AppCompatActivity;
 
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.common.db.ArticlesTable;
 import com.arsen.listofarticles.common.model.ArticleField;
-import com.arsen.listofarticles.interfaces.ArticlesView;
+import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.rest.models.FilmsResponse;
 import com.arsen.listofarticles.util.Constants;
@@ -17,34 +16,31 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class ArticlesPresenter {
     private static final Logger LOGGER = Logger.getLogger(ArticlesPresenter.class.getSimpleName());
 
-    private AppCompatActivity appCompatActivity;
+    @Inject
+    ArticlesModel articlesModel;
     private ArticlesView articlesView;
-    private ArticlesModel articlesModel;
-
-    public ArticlesPresenter(ArticlesModel articlesModel) {
-        this.articlesModel = articlesModel;
-    }
 
     public void attachView(ArticlesView articlesView) {
-        this.appCompatActivity = (AppCompatActivity) articlesView.provideContext();
         this.articlesView = articlesView;
 
-        ((App) (appCompatActivity.getApplication())).getNetComponent().inject(this);
+        ((App) (articlesView.provideContext())).getNetComponent().inject(this);
     }
 
     public void detachView() {
         articlesView = null;
     }
 
-    public void startLoading(int page) {
-        if (NetworkHelper.isNetworkAvailable(appCompatActivity))
-            loadArticles(page);
+    public void startLoading() {
+        if (NetworkHelper.isNetworkAvailable(articlesView.provideContext()))
+            loadArticles(1);
         else
             loadArticlesFromDb();
     }
@@ -85,7 +81,7 @@ public class ArticlesPresenter {
 
     private void addArticleToDb(ArrayList<? extends ArticleField> articles) {
         ContentValues cv;
-        for(ArticleField articleField: articles) {
+        for (ArticleField articleField : articles) {
             cv = new ContentValues(3);
             cv.put(ArticlesTable.COLUMN.TITLE, articleField.getTitle());
             cv.put(ArticlesTable.COLUMN.CATEGORY, articleField.getCategory());
@@ -94,4 +90,6 @@ public class ArticlesPresenter {
             articlesModel.addArticleToDB(() -> LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "item successfully added to db: %s", articleField.getCategory())), cv);
         }
     }
+
+
 }

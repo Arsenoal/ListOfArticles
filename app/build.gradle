@@ -37,6 +37,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    /*implementation("com.quickblox:quickblox-android-sdk-chat:2.5.1@aar") {
+        transitive=true
+    }
+    implementation 'com.quickblox:quickblox-android-sdk-core:2.6.1@aar'
+    implementation 'com.quickblox:quickblox-android-sdk-chat:2.6.1'*/
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
