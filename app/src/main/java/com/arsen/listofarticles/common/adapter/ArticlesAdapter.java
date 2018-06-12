@@ -114,4 +114,9 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     public int getItemCount() {
         return articles.size();
     }
+
+    public void reset() {
+        articles.clear();
+        notifyDataSetChanged();
+    }
 }

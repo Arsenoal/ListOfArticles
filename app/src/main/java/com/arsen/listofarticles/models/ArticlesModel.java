@@ -70,22 +70,24 @@ public class ArticlesModel {
     }
 
     public void addArticleToDB(OnCompletedCallback onCompletedCallback, ContentValues... params) {
-        Observable.fromCallable(() -> {
-            ContentValues cvUser = params[0];
-            dbHelper.getWritableDatabase().insert(ArticlesTable.TABLE, null, cvUser);
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(
-                        v -> onCompletedCallback.completed(),
-                        Throwable::printStackTrace
-                );
+        if (!dbHelper.isItemPresent(params[0].getAsString(ArticlesTable.COLUMN.TITLE))) {
+            Observable.fromCallable(() -> {
+                ContentValues cvUser = params[0];
+                dbHelper.getWritableDatabase().insert(ArticlesTable.TABLE, null, cvUser);
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    subscribe(
+                            v -> onCompletedCallback.completed(),
+                            Throwable::printStackTrace
+                    );
+        }
     }
 
     public void invalidate() {

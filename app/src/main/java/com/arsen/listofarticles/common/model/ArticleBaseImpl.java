@@ -29,16 +29,16 @@ public class ArticleBaseImpl implements ArticleField {
 
     @Override
     public String getTitle() {
-        return null;
+        return this.title;
     }
 
     @Override
     public String getThumbnail() {
-        return null;
+        return this.thumbnail;
     }
 
     @Override
     public String getCategory() {
-        return null;
+        return this.category;
     }
 }

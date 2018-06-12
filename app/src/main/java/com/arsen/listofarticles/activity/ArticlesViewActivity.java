@@ -35,6 +35,7 @@ public class ArticlesViewActivity
     private ArticlesPresenter articlesPresenter;
     private ArticlesAdapter articlesAdapter;
     private WrapContentLinearLayoutManager wrapContentLinearLayoutManager;
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +65,11 @@ public class ArticlesViewActivity
     }
 
     private void setupInfiniteScroll() {
-        EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener
+        endlessRecyclerViewScrollListener
                 = new EndlessRecyclerViewScrollListener(wrapContentLinearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                articlesPresenter.startLoading(page);
+                articlesPresenter.loadArticles(page);
                 LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "page: %s", page));
             }
         };
@@ -86,5 +87,13 @@ public class ArticlesViewActivity
     @Override
     public Context provideContext() {
         return this;
+    }
+
+    @Override
+    public void invalidate() {
+        if (endlessRecyclerViewScrollListener != null)
+            endlessRecyclerViewScrollListener.resetState();
+        if (articlesAdapter != null)
+            articlesAdapter.reset();
     }
 }
