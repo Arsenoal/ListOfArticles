@@ -9,6 +9,7 @@ import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.common.adapter.ArticlesAdapter;
 import com.arsen.listofarticles.common.model.ArticleField;
 import com.arsen.listofarticles.custom_layout_managers.WrapContentLinearLayoutManager;
+import com.arsen.listofarticles.database.DbHelper;
 import com.arsen.listofarticles.interfaces.ArticlesView;
 import com.arsen.listofarticles.listeners.EndlessRecyclerViewScrollListener;
 import com.arsen.listofarticles.models.ArticlesModel;
@@ -49,7 +50,8 @@ public class ArticlesViewActivity
     }
 
     private void initPresenter() {
-        ArticlesModel articlesModel = new ArticlesModel(this);
+        DbHelper dbHelper = new DbHelper(this);
+        ArticlesModel articlesModel = new ArticlesModel(this, dbHelper);
         this.articlesPresenter = new ArticlesPresenter(articlesModel);
         articlesPresenter.attachView(this);
 

@@ -1,12 +1,17 @@
 package com.arsen.listofarticles.presenters;
 
+import android.content.ContentValues;
 import android.support.v7.app.AppCompatActivity;
 
 import com.arsen.listofarticles.App;
+import com.arsen.listofarticles.common.model.ArticleField;
 import com.arsen.listofarticles.interfaces.ArticlesView;
+import com.arsen.listofarticles.interfaces.LoadArticlesCallback;
+import com.arsen.listofarticles.interfaces.OnCompletedCallback;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.util.Constants;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,14 +59,24 @@ public class ArticlesPresenter {
                         observeOn(AndroidSchedulers.mainThread()).
                         map(filmsResponse -> filmsResponse).
                         subscribe(
-                                filmsResponse -> {
-                                    articlesView.addArticles(filmsResponse.getResponse().getFields());
-                                },
+                                filmsResponse -> articlesView.addArticles(filmsResponse.getResponse().getFields()),
                                 error -> {
                                     //TODO handle is left for future, for now just log what went wrong
                                     LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "error cause on getting films: %s", error.getCause()));
                                 }
                         ));
 
+    }
+
+    private void loadArticlesFromDb() {
+        articlesModel.loadArticlesFromDB(articles -> {
+
+        });
+    }
+
+    private void addArticleToDb(ArticleField article) {
+        articlesModel.addArticleToDB(() -> {
+
+        });
     }
 }
