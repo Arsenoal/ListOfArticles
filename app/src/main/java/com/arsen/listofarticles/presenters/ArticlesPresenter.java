@@ -80,9 +80,7 @@ public class ArticlesPresenter {
 
     private void loadArticlesFromDb() {
         articlesView.invalidate();
-        articlesModel.loadArticlesFromDB(articles -> {
-            articlesView.addArticles(articles);
-        });
+        articlesModel.loadArticlesFromDB(articles -> articlesView.addArticles(articles));
     }
 
     private void addArticleToDb(ArrayList<? extends ArticleField> articles) {

@@ -69,11 +69,10 @@ public class ArticlesModel {
                 );
     }
 
-    public void addArticleToDB(OnCompletedCallback onCompletedCallback, ContentValues... params) {
-        if (!dbHelper.isItemPresent(params[0].getAsString(ArticlesTable.COLUMN.TITLE))) {
+    public void addArticleToDB(OnCompletedCallback onCompletedCallback, ContentValues cv) {
+        if (!dbHelper.isItemPresent(cv.getAsString(ArticlesTable.COLUMN.TITLE))) {
             Observable.fromCallable(() -> {
-                ContentValues cvUser = params[0];
-                dbHelper.getWritableDatabase().insert(ArticlesTable.TABLE, null, cvUser);
+                dbHelper.getWritableDatabase().insert(ArticlesTable.TABLE, null, cv);
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
