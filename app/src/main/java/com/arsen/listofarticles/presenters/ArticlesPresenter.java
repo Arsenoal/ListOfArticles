@@ -7,12 +7,12 @@ import com.arsen.listofarticles.interfaces.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.util.Constants;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class ArticlesPresenter {
     private static final Logger LOGGER = Logger.getLogger(ArticlesPresenter.class.getSimpleName());
@@ -27,18 +27,18 @@ public class ArticlesPresenter {
     public void attachView(ArticlesView articlesView) {
         this.articlesView = articlesView;
 
-        ((App)(((AppCompatActivity)articlesView.provideContext()).getApplication())).getNetComponent().inject(this);
+        ((App) (((AppCompatActivity) articlesView.provideContext()).getApplication())).getNetComponent().inject(this);
     }
 
     public void detachView() {
         articlesView = null;
     }
 
-    public void startLoading() {
-        loadArticles();
+    public void startLoading(int page) {
+        loadArticles(page);
     }
 
-    private void loadArticles() {
+    private void loadArticles(int page) {
         articlesModel.loadArticles(
                 articlesModel.
                         getFilmsService().
@@ -49,7 +49,7 @@ public class ArticlesPresenter {
                                 "starRating,headline,thumbnail,short-url",
                                 "relevance",
                                 Constants.API_KEY,
-                                1).
+                                page).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         map(filmsResponse -> filmsResponse).
@@ -62,5 +62,6 @@ public class ArticlesPresenter {
                                     LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "error cause on getting films: %s", error.getCause()));
                                 }
                         ));
+
     }
 }

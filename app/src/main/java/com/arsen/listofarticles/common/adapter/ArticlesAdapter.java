@@ -21,8 +21,10 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticleHolder> {
+    private final static Logger LOGGER = Logger.getLogger(ArticlesAdapter.class.getSimpleName());
 
     private ArrayList<ArticleField> articles;
     private AppCompatActivity appCompatActivity;
@@ -44,7 +46,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         AppCompatTextView articleTitle;
         AppCompatImageView articleImage;
 
-        public ArticleHolder(View view) {
+        ArticleHolder(View view) {
             super(view);
 
             articleImage = view.findViewById(R.id.article_img);
@@ -53,27 +55,33 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         }
 
         void bind(ArticleField article) {
-            if (!appCompatActivity.isDestroyed())
-                Glide.
-                        with(appCompatActivity).
-                        load(article.getThumbnail()).
-                        apply(RequestOptions.centerCropTransform()).
-                        into(new BaseTarget<Drawable>() {
-                            @Override
-                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                                articleImage.setImageDrawable(resource);
-                            }
+            String thumbNail = article.getThumbnail();
 
-                            @Override
-                            public void getSize(@NonNull SizeReadyCallback cb) {
-                                cb.onSizeReady(SIZE_ORIGINAL, DP_150);
-                            }
+            if (!appCompatActivity.isDestroyed()) {
+                if (thumbNail != null)
+                    Glide.
+                            with(appCompatActivity).
+                            load(thumbNail).
+                            apply(RequestOptions.centerCropTransform()).
+                            into(new BaseTarget<Drawable>() {
+                                @Override
+                                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                    articleImage.setImageDrawable(resource);
+                                }
 
-                            @Override
-                            public void removeCallback(@NonNull SizeReadyCallback cb) {
+                                @Override
+                                public void getSize(@NonNull SizeReadyCallback cb) {
+                                    cb.onSizeReady(SIZE_ORIGINAL, DP_150);
+                                }
 
-                            }
-                        });
+                                @Override
+                                public void removeCallback(@NonNull SizeReadyCallback cb) {
+
+                                }
+                            });
+                else
+                    articleImage.setImageResource(R.drawable.ic_android);
+            }
 
             String title = article.getTitle();
             String category = article.getCategory();
