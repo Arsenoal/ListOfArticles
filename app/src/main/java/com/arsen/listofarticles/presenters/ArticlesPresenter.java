@@ -1,10 +1,13 @@
 package com.arsen.listofarticles.presenters;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 
 import com.arsen.listofarticles.App;
+import com.arsen.listofarticles.activity.ArticleSingleViewActivity;
 import com.arsen.listofarticles.common.db.ArticlesTable;
-import com.arsen.listofarticles.common.model.ArticleField;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.rest.models.FilmsResponse;
@@ -26,12 +29,15 @@ public class ArticlesPresenter {
 
     @Inject
     ArticlesModel articlesModel;
+
     private ArticlesView articlesView;
+    private Context context;
 
     public void attachView(ArticlesView articlesView) {
         this.articlesView = articlesView;
+        this.context = articlesView.provideContext();
 
-        ((App) (articlesView.provideContext())).getNetComponent().inject(this);
+        ((App) context).getNetComponent().inject(this);
     }
 
     public void detachView() {
@@ -48,12 +54,12 @@ public class ArticlesPresenter {
     public void loadArticles(int page) {
         articlesModel.loadArticles(
                 articlesModel.
-                        getFilmsService().
+                        getArticlesService().
                         getFilms(
                                 "12%20years%20a%20slave",
-                                "film/film,tone/reviews",
+                                Constants.TAGS,
                                 "2010-01-01",
-                                "starRating,headline,thumbnail,short-url",
+                                Constants.FIELDS,
                                 "relevance",
                                 Constants.API_KEY,
                                 page).
@@ -91,5 +97,9 @@ public class ArticlesPresenter {
         }
     }
 
-
+    public void itemClicked(String id) {
+        Intent intent = new Intent(context, ArticleSingleViewActivity.class);
+        intent.putExtra("article_id", id);
+        context.startActivity(intent);
+    }
 }

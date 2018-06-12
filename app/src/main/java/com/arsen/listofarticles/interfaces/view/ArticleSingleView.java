@@ -1,5 +1,8 @@
 package com.arsen.listofarticles.interfaces.view;
 
+import android.content.Context;
+
 public interface ArticleSingleView {
-    void loadImage();
+    void loadImage(String url);
+    Context provideContext();
 }

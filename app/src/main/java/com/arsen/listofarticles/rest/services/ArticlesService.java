@@ -1,12 +1,14 @@
 package com.arsen.listofarticles.rest.services;
 
+import com.arsen.listofarticles.rest.models.Article;
 import com.arsen.listofarticles.rest.models.FilmsResponse;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface FilmsService {
+public interface ArticlesService {
 
     @GET("search")
     Single<FilmsResponse> getFilms(
@@ -17,5 +19,12 @@ public interface FilmsService {
             @Query("order-by") String orderBy,
             @Query("api-key") String apiKey,
             @Query("page") int page
+    );
+
+    @GET("search/{id}")
+    Single<Article> getArticle(
+            @Path("id") String id,
+            @Query("api-key") String apiKey,
+            @Query("show-fields") String fields
     );
 }

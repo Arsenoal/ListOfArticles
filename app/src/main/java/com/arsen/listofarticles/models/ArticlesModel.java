@@ -3,16 +3,15 @@ package com.arsen.listofarticles.models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.common.db.ArticlesTable;
-import com.arsen.listofarticles.common.model.ArticleBaseImpl;
-import com.arsen.listofarticles.common.model.ArticleField;
+import com.arsen.listofarticles.rest.models.ArticleFieldBaseImpl;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.database.DbHelper;
 import com.arsen.listofarticles.interfaces.LoadArticlesCallback;
 import com.arsen.listofarticles.interfaces.OnCompletedCallback;
-import com.arsen.listofarticles.rest.services.FilmsService;
+import com.arsen.listofarticles.rest.services.ArticlesService;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +32,7 @@ public class ArticlesModel {
     CompositeDisposable compositeDisposable;
 
     @Inject
-    FilmsService filmsService;
+    ArticlesService articlesService;
 
     public ArticlesModel(Context context) {
         ((App) context).getNetComponent().inject(this);
@@ -49,8 +48,8 @@ public class ArticlesModel {
             Cursor cursor
                     = dbHelper.getReadableDatabase().query(ArticlesTable.TABLE, null, null, null, null, null, null);
             while (cursor.moveToNext()) {
-                ArticleBaseImpl article = new ArticleBaseImpl();
-                article.setId(cursor.getLong(cursor.getColumnIndex(ArticlesTable.COLUMN.ID)));
+                ArticleFieldBaseImpl article = new ArticleFieldBaseImpl();
+                article.setId(String.valueOf(cursor.getLong(cursor.getColumnIndex(ArticlesTable.COLUMN.ID))));
                 article.setTitle(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.TITLE)));
                 article.setCategory(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.CATEGORY)));
                 article.setThumbnail(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.THUMBNAIL)));
@@ -92,7 +91,7 @@ public class ArticlesModel {
         compositeDisposable.clear();
     }
 
-    public FilmsService getFilmsService() {
-        return filmsService;
+    public ArticlesService getArticlesService() {
+        return articlesService;
     }
 }

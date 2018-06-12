@@ -2,6 +2,7 @@ package com.arsen.listofarticles.dagger.module;
 
 import android.content.Context;
 
+import com.arsen.listofarticles.models.ArticleSingleModel;
 import com.arsen.listofarticles.models.ArticlesModel;
 
 import dagger.Module;
@@ -18,5 +19,10 @@ public class ModelsModule {
     @Provides
     ArticlesModel provideArticlesModel() {
         return new ArticlesModel(context);
+    }
+
+    @Provides
+    ArticleSingleModel provideArticleSingleModel() {
+        return new ArticleSingleModel(context);
     }
 }

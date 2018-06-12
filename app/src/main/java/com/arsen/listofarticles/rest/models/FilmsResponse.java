@@ -1,13 +1,13 @@
 package com.arsen.listofarticles.rest.models;
 
-import com.arsen.listofarticles.common.model.ArticleField;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
 public class FilmsResponse {
-
     @Expose
     @SerializedName("response")
     private Response response;
@@ -17,7 +17,7 @@ public class FilmsResponse {
         @SerializedName("results")
         private ArrayList<Film> films;
 
-        public class Film {
+        public class Film implements ArticleModel {
             @Expose
             @SerializedName("id")
             private String id;
@@ -50,6 +50,7 @@ public class FilmsResponse {
             @SerializedName("fields")
             private Field field;
 
+            @Override
             public String getId() {
                 return id;
             }
@@ -83,6 +84,9 @@ public class FilmsResponse {
             }
 
             public class Field implements ArticleField {
+                private String id;
+                private String category;
+
                 @Expose
                 @SerializedName("headline")
                 private String headline;
@@ -94,8 +98,6 @@ public class FilmsResponse {
                 @Expose
                 @SerializedName("thumbnail")
                 private String thumbnail;
-
-                private String category;
 
                 public String getShortUrl() {
                     return shortUrl;
@@ -116,11 +118,19 @@ public class FilmsResponse {
                     return this.category;
                 }
 
-                public void setCategory(String category) {
+                void setCategory(String category) {
                     this.category = category;
                 }
-            }
 
+                @Override
+                public String getId() {
+                    return this.id;
+                }
+
+                void setId(String id) {
+                    this.id = id;
+                }
+            }
         }
 
         public ArrayList<Film> getFilms() {
@@ -130,9 +140,10 @@ public class FilmsResponse {
         public ArrayList<Film.Field> getFields() {
             ArrayList<Film.Field> fields = new ArrayList<>();
 
-            for(Film film: films) {
+            for (Film film : films) {
                 Film.Field field = film.getField();
                 field.setCategory(film.getSectionName());
+                field.setId(film.getId());
                 fields.add(field);
             }
             return fields;

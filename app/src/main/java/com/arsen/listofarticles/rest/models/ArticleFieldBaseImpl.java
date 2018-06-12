@@ -1,13 +1,15 @@
-package com.arsen.listofarticles.common.model;
+package com.arsen.listofarticles.rest.models;
 
-public class ArticleBaseImpl implements ArticleField {
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 
-    private long id;
+public class ArticleFieldBaseImpl implements ArticleField {
+
+    private String id;
     private String title;
     private String thumbnail;
     private String category;
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -23,7 +25,8 @@ public class ArticleBaseImpl implements ArticleField {
         this.category = category;
     }
 
-    public long getId() {
+    @Override
+    public String getId() {
         return this.id;
     }
 

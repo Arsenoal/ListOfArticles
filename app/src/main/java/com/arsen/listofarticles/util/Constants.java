@@ -7,4 +7,7 @@ public final class Constants {
     public final static String API_KEY = "5c4394bd-ee88-436a-a151-b1e9a26dbc41";
 
     public final static int VISIBLE_ITEMS_THRESHOLD = 10;
+
+    public final static String TAGS = "film/film,tone/reviews";
+    public final static String FIELDS = "starRating,headline,thumbnail,short-url";
 }

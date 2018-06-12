@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.arsen.listofarticles.R;
-import com.arsen.listofarticles.common.model.ArticleField;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -23,16 +23,22 @@ import com.bumptech.glide.request.transition.Transition;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableConverter;
+import io.reactivex.subjects.PublishSubject;
+
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticleHolder> {
     private final static Logger LOGGER = Logger.getLogger(ArticlesAdapter.class.getSimpleName());
 
     private ArrayList<ArticleField> articles;
     private AppCompatActivity appCompatActivity;
     private final int DP_150;
+    private final PublishSubject<String> onClickSubject;
 
     public ArticlesAdapter() {
-        articles = new ArrayList<>();
-        DP_150 = ScreenHelper.convertDpToPixel(150);
+        this.articles = new ArrayList<>();
+        this.DP_150 = ScreenHelper.convertDpToPixel(150);
+        this.onClickSubject = PublishSubject.create();
     }
 
     @Override
@@ -42,12 +48,15 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     }
 
     class ArticleHolder extends RecyclerView.ViewHolder {
+        View rootView;
         AppCompatTextView articleCategory;
         AppCompatTextView articleTitle;
         AppCompatImageView articleImage;
 
         ArticleHolder(View view) {
             super(view);
+
+            this.rootView = view;
 
             articleImage = view.findViewById(R.id.article_img);
             articleTitle = view.findViewById(R.id.article_title);
@@ -102,7 +111,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
 
     @Override
     public void onBindViewHolder(@NonNull ArticleHolder holder, int position) {
-        holder.bind(articles.get(position));
+        ArticleField articleField = articles.get(position);
+        holder.bind(articleField);
+
+        holder.rootView.setOnClickListener(v -> onClickSubject.onNext(articleField.getId()));
     }
 
     public void addArticles(ArrayList<? extends ArticleField> newArticles) {
@@ -118,5 +130,9 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     public void reset() {
         articles.clear();
         notifyDataSetChanged();
+    }
+
+    public Observable<String> getArticleIdOnItemClick() {
+        return onClickSubject.as(upstream -> upstream);
     }
 }

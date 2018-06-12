@@ -2,7 +2,7 @@ package com.arsen.listofarticles.interfaces.view;
 
 import android.content.Context;
 
-import com.arsen.listofarticles.common.model.ArticleField;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 
 import java.util.ArrayList;
 

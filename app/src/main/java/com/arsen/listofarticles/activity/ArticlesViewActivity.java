@@ -8,24 +8,21 @@ import android.support.v7.widget.RecyclerView;
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.common.adapter.ArticlesAdapter;
-import com.arsen.listofarticles.common.model.ArticleField;
 import com.arsen.listofarticles.custom_layout_managers.WrapContentLinearLayoutManager;
-import com.arsen.listofarticles.database.DbHelper;
 import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.listeners.EndlessRecyclerViewScrollListener;
-import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.presenters.ArticlesPresenter;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ArticlesViewActivity
         extends AppCompatActivity implements ArticlesView {
@@ -35,10 +32,6 @@ public class ArticlesViewActivity
     @BindView(R.id.articles_list)
     RecyclerView articlesList;
 
-    @Inject
-    DbHelper dbHelper;
-    @Inject
-    ArticlesModel articlesModel;
     @Inject
     ArticlesPresenter articlesPresenter;
 
@@ -51,13 +44,15 @@ public class ArticlesViewActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        ((App)getApplication()).getNetComponent().inject(this);
+        ((App) getApplication()).getNetComponent().inject(this);
 
         initArticlesList();
 
         initPresenter();
 
         setupInfiniteScroll();
+
+        setupItemClick();
     }
 
     private void initPresenter() {
@@ -102,5 +97,14 @@ public class ArticlesViewActivity
             endlessRecyclerViewScrollListener.resetState();
         if (articlesAdapter != null)
             articlesAdapter.reset();
+    }
+
+    public void setupItemClick() {
+        articlesAdapter
+                .getArticleIdOnItemClick()
+                .subscribe(id -> {
+                    articlesPresenter.itemClicked(id);
+                    LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "id: %s", id));
+                });
     }
 }
