@@ -45,7 +45,7 @@ public class ArticleSinglePresenter {
         this.articleSingleView = null;
     }
 
-    public void loadImage() {
+    public void loadData() {
         articleSingleModel.loadData(
                 articlesService.
                         getArticle(
@@ -56,7 +56,7 @@ public class ArticleSinglePresenter {
                         observeOn(AndroidSchedulers.mainThread()).
                         map(article -> article).
                         subscribe(
-                                article -> articleSingleView.loadImage(article.getResponse().getContent().getFields().getThumbnail()),
+                                article -> articleSingleView.loadData(article.getResponse().getContent().getFields()),
                                 error -> {
                                     //TODO implement UI presentation, for now just print stacktrace
                                     error.printStackTrace();

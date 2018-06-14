@@ -7,11 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.interfaces.view.ArticleSingleView;
 import com.arsen.listofarticles.presenters.ArticleSinglePresenter;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,6 +31,12 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
     @BindView(R.id.article_image)
     AppCompatImageView articleImage;
 
+    @BindView(R.id.article_title)
+    AppCompatTextView titleLabel;
+
+    @BindView(R.id.article_category)
+    AppCompatTextView categoryLabel;
+
     @Inject
     ArticleSinglePresenter articleSinglePresenter;
 
@@ -45,7 +53,7 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
         prepare();
 
         articleSinglePresenter.attachView(this);
-        articleSinglePresenter.loadImage();
+        articleSinglePresenter.loadData();
     }
 
     private void prepare() {
@@ -53,29 +61,43 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
     }
 
     @Override
-    public void loadImage(String url) {
-        if (!this.isDestroyed())
-            Glide.
-                    with(this).
-                    load(url).
-                    apply(RequestOptions.centerCropTransform()).
-                    into(new BaseTarget<Drawable>() {
-                             @Override
-                             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                                 articleImage.setImageDrawable(resource);
-                             }
+    public void loadData(ArticleField articleField) {
+        String thumbNail = articleField.getThumbnail();
+        String title = articleField.getTitle();
+        String category = articleField.getCategory();
 
-                             @Override
-                             public void getSize(@NonNull SizeReadyCallback cb) {
-                                 cb.onSizeReady(SIZE_ORIGINAL, DP_200);
-                             }
 
-                             @Override
-                             public void removeCallback(@NonNull SizeReadyCallback cb) {
+        if (!this.isDestroyed()) {
+            if (thumbNail != null) {
+                Glide.
+                        with(this).
+                        load(thumbNail).
+                        apply(RequestOptions.centerCropTransform()).
+                        into(new BaseTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                articleImage.setImageDrawable(resource);
+                            }
 
-                             }
-                         }
-                    );
+                            @Override
+                            public void getSize(@NonNull SizeReadyCallback cb) {
+                                cb.onSizeReady(SIZE_ORIGINAL, DP_200);
+                            }
+
+                            @Override
+                            public void removeCallback(@NonNull SizeReadyCallback cb) {
+
+                            }
+                        });
+            } else
+                articleImage.setImageResource(R.drawable.ic_android);
+        }
+
+        if (title != null)
+            titleLabel.setText(title);
+
+        if (category != null)
+            categoryLabel.setText(category);
     }
 
     @Override
