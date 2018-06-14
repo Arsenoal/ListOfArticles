@@ -1,16 +1,19 @@
 package com.arsen.listofarticles.presenters;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
+import android.util.Pair;
 
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.activity.ArticleSingleViewActivity;
 import com.arsen.listofarticles.common.db.ArticlesTable;
-import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.rest.models.FilmsResponse;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.util.Constants;
 import com.arsen.listofarticles.util.helper.NetworkHelper;
 
@@ -24,6 +27,8 @@ import javax.inject.Inject;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.arsen.listofarticles.util.Constants.ARTICLE_ID_KEY;
+
 public class ArticlesPresenter {
     private static final Logger LOGGER = Logger.getLogger(ArticlesPresenter.class.getSimpleName());
 
@@ -31,13 +36,13 @@ public class ArticlesPresenter {
     ArticlesModel articlesModel;
 
     private ArticlesView articlesView;
-    private Context context;
+    private AppCompatActivity activity;
 
     public void attachView(ArticlesView articlesView) {
         this.articlesView = articlesView;
-        this.context = articlesView.provideContext();
+        this.activity = (AppCompatActivity) articlesView.provideContext();
 
-        ((App) context).getNetComponent().inject(this);
+        ((App) activity.getApplication()).getNetComponent().inject(this);
     }
 
     public void detachView() {
@@ -97,9 +102,15 @@ public class ArticlesPresenter {
         }
     }
 
-    public void itemClicked(String id) {
-        Intent intent = new Intent(context, ArticleSingleViewActivity.class);
-        intent.putExtra("article_id", id);
-        context.startActivity(intent);
+    public void itemClicked(Pair<String, AppCompatImageView> pair) {
+        String articleId = pair.first;
+        AppCompatImageView articleImage = pair.second;
+
+        Intent intent = new Intent(activity, ArticleSingleViewActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(ARTICLE_ID_KEY, articleId);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(activity, articleImage, "article");
+        activity.startActivity(intent, options.toBundle());
     }
 }

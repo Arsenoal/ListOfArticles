@@ -21,9 +21,9 @@ public interface ArticlesService {
             @Query("page") int page
     );
 
-    @GET("search/{id}")
+    @GET("{id}")
     Single<Article> getArticle(
-            @Path("id") String id,
+            @Path(value = "id", encoded = true) String id,
             @Query("api-key") String apiKey,
             @Query("show-fields") String fields
     );

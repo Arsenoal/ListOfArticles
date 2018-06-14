@@ -10,4 +10,6 @@ public final class Constants {
 
     public final static String TAGS = "film/film,tone/reviews";
     public final static String FIELDS = "starRating,headline,thumbnail,short-url";
+
+    public final static String ARTICLE_ID_KEY = "article_id";
 }

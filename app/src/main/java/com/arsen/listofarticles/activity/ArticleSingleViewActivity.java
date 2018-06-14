@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 
+import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.interfaces.view.ArticleSingleView;
 import com.arsen.listofarticles.presenters.ArticleSinglePresenter;
@@ -39,6 +40,7 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
         setContentView(R.layout.activity_article_single_view);
 
         ButterKnife.bind(this);
+        ((App) getApplication()).getNetComponent().inject(this);
 
         prepare();
 
@@ -78,6 +80,6 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
 
     @Override
     public Context provideContext() {
-        return this.getApplicationContext();
+        return this;
     }
 }

@@ -88,7 +88,7 @@ public class ArticlesViewActivity
 
     @Override
     public Context provideContext() {
-        return this.getApplicationContext();
+        return this;
     }
 
     @Override
@@ -102,9 +102,6 @@ public class ArticlesViewActivity
     public void setupItemClick() {
         articlesAdapter
                 .getArticleIdOnItemClick()
-                .subscribe(id -> {
-                    articlesPresenter.itemClicked(id);
-                    LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "id: %s", id));
-                });
+                .subscribe(pair -> articlesPresenter.itemClicked(pair));
     }
 }

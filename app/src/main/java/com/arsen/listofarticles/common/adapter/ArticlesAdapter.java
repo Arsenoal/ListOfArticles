@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     private ArrayList<ArticleField> articles;
     private AppCompatActivity appCompatActivity;
     private final int DP_150;
-    private final PublishSubject<String> onClickSubject;
+    private final PublishSubject<Pair<String, AppCompatImageView>> onClickSubject;
 
     public ArticlesAdapter() {
         this.articles = new ArrayList<>();
@@ -114,7 +115,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         ArticleField articleField = articles.get(position);
         holder.bind(articleField);
 
-        holder.rootView.setOnClickListener(v -> onClickSubject.onNext(articleField.getId()));
+        holder.rootView.setOnClickListener(v -> onClickSubject.onNext(new Pair<>(articleField.getId(), holder.articleImage)));
     }
 
     public void addArticles(ArrayList<? extends ArticleField> newArticles) {
@@ -132,7 +133,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         notifyDataSetChanged();
     }
 
-    public Observable<String> getArticleIdOnItemClick() {
+    public Observable<Pair<String, AppCompatImageView>> getArticleIdOnItemClick() {
         return onClickSubject.as(upstream -> upstream);
     }
 }
