@@ -122,7 +122,7 @@ public class ArticlesPresenter {
 
     }
 
-    public void itemClicked(Pair<String, AppCompatImageView> pair) {
+    public void articleClicked(Pair<String, AppCompatImageView> pair) {
         String articleId = pair.first;
         AppCompatImageView articleImage = pair.second;
 

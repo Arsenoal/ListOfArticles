@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,14 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+
 public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAdapter.ArticleHolder> {
+
     private ArrayList<ArticleField> pinnedArticles;
     private AppCompatActivity appCompatActivity;
+    private PublishSubject<Pair<String, AppCompatImageView>> onClickSubject;
     private final int DP_120;
 
     @Override
@@ -35,23 +41,26 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
     public PinnedArticlesAdapter() {
         this.pinnedArticles = new ArrayList<>();
         this.DP_120 = ScreenHelper.convertDpToPixel(120);
+        this.onClickSubject = PublishSubject.create();
     }
 
     class ArticleHolder extends RecyclerView.ViewHolder {
         AppCompatImageView articleImage;
+        View itemView;
 
         ArticleHolder(View itemView) {
             super(itemView);
 
-            articleImage = itemView.findViewById(R.id.article_image);
+            this.articleImage = itemView.findViewById(R.id.article_image);
+            this.itemView = itemView;
         }
 
-        void bind(String imageUrl) {
+        void bind(ArticleField articleField) {
             if (!appCompatActivity.isDestroyed()) {
-                if (imageUrl != null)
+                if (articleField.getThumbnail() != null)
                     Glide.
                             with(appCompatActivity).
-                            load(imageUrl).
+                            load(articleField.getThumbnail()).
                             apply(RequestOptions.centerCropTransform()).
                             into(new BaseTarget<Drawable>() {
                                 @Override
@@ -73,6 +82,7 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
                     articleImage.setImageResource(R.drawable.ic_android);
             }
 
+            itemView.setOnClickListener(v -> onClickSubject.onNext(new Pair<>(articleField.getId(), articleImage)));
         }
     }
 
@@ -86,7 +96,7 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
 
     @Override
     public void onBindViewHolder(@NonNull ArticleHolder holder, int position) {
-        holder.bind(pinnedArticles.get(position).getThumbnail());
+        holder.bind(pinnedArticles.get(position));
     }
 
     @Override
@@ -102,5 +112,9 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
     public void addArticle(ArticleField articleField) {
         pinnedArticles.add(articleField);
         notifyItemInserted(pinnedArticles.size() - 1);
+    }
+
+    public Observable<Pair<String, AppCompatImageView>> getArticleOnItemClick() {
+        return onClickSubject.as(upstream -> upstream);
     }
 }

@@ -91,7 +91,6 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
         String title = articleField.getTitle();
         String category = articleField.getCategory();
 
-
         if (!this.isDestroyed()) {
             if (thumbNail != null) {
                 Glide.

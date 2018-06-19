@@ -27,7 +27,8 @@ public class ArticlesTable {
                             + "%s integer primary key autoincrement,"
                             + "%s text,"
                             + "%s text,"
+                            + "%s text,"
                             + "%s text" + ");",
-                    PINNED_ARTICLES_TABLE, COLUMN.ARTICLE_ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
+                    PINNED_ARTICLES_TABLE, COLUMN.ID, COLUMN.ARTICLE_ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
 
 }

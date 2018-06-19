@@ -3,9 +3,13 @@ package com.arsen.listofarticles.presenters;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
+import android.util.Pair;
 
 import com.arsen.listofarticles.App;
+import com.arsen.listofarticles.activity.ArticleSingleViewActivity;
 import com.arsen.listofarticles.common.db.ArticlesTable;
 import com.arsen.listofarticles.interfaces.OnCompletedCallback;
 import com.arsen.listofarticles.interfaces.view.ArticleSingleView;
@@ -73,7 +77,7 @@ public class ArticleSinglePresenter {
             ContentValues cv;
 
             cv = new ContentValues(4);
-            cv.put(ArticlesTable.COLUMN.ARTICLE_ID, articleField.getId());
+            cv.put(ArticlesTable.COLUMN.ARTICLE_ID, id);
             cv.put(ArticlesTable.COLUMN.TITLE, articleField.getTitle());
             cv.put(ArticlesTable.COLUMN.CATEGORY, articleField.getCategory());
             cv.put(ArticlesTable.COLUMN.THUMBNAIL, articleField.getThumbnail());

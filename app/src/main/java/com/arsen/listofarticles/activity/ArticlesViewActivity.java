@@ -62,6 +62,8 @@ public class ArticlesViewActivity
         setupInfiniteScroll();
 
         setupArticleClick();
+
+        setupPinnedArticleClick();
     }
 
     private void initPresenter() {
@@ -124,7 +126,13 @@ public class ArticlesViewActivity
     public void setupArticleClick() {
         articlesAdapter
                 .getArticleIdOnItemClick()
-                .subscribe(pair -> articlesPresenter.itemClicked(pair));
+                .subscribe(pair -> articlesPresenter.articleClicked(pair));
+    }
+
+    public void setupPinnedArticleClick() {
+        pinnedArticlesAdapter
+                .getArticleOnItemClick()
+                .subscribe(pair -> articlesPresenter.articleClicked(pair));
     }
 
     @Override

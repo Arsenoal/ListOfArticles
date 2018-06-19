@@ -55,9 +55,9 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
 
             this.rootView = view;
 
-            articleImage = view.findViewById(R.id.article_img);
-            articleTitle = view.findViewById(R.id.article_title);
-            articleCategory = view.findViewById(R.id.article_category);
+            this.articleImage = view.findViewById(R.id.article_img);
+            this.articleTitle = view.findViewById(R.id.article_title);
+            this.articleCategory = view.findViewById(R.id.article_category);
         }
 
         void bind(ArticleField article) {
@@ -95,6 +95,8 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
             if (title != null) articleTitle.setText(title);
             if (category != null) articleCategory.setText(category);
 
+
+            rootView.setOnClickListener(v -> onClickSubject.onNext(new Pair<>(article.getId(), articleImage)));
         }
     }
 
@@ -108,10 +110,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
 
     @Override
     public void onBindViewHolder(@NonNull ArticleHolder holder, int position) {
-        ArticleField articleField = articles.get(position);
-        holder.bind(articleField);
-
-        holder.rootView.setOnClickListener(v -> onClickSubject.onNext(new Pair<>(articleField.getId(), holder.articleImage)));
+        holder.bind(articles.get(position));
     }
 
     public void addArticles(ArrayList<? extends ArticleField> newArticles) {
