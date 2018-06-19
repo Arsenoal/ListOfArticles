@@ -86,7 +86,7 @@ public class ArticlesPresenter {
                 articlesModel.
                         getArticlesService().
                         getFilms(
-                                "12%20years%20a%20slave",
+                                Constants.Q,
                                 Constants.TAGS,
                                 Constants.FROM_DATE,
                                 Constants.FIELDS,
@@ -209,7 +209,7 @@ public class ArticlesPresenter {
                         articlesModel.
                                 getArticlesService().
                                 getFilms(
-                                        "12%20years%20a%20slave",
+                                        Constants.Q,
                                         Constants.TAGS,
                                         Constants.FROM_DATE,
                                         Constants.FIELDS,
@@ -232,8 +232,6 @@ public class ArticlesPresenter {
                                                     ArticlesPresenter.this.articlesView.addNewArticle(article);
                                                 }
                                             }
-
-                                            LOGGER.log(Level.INFO, "timer scheduled");
 
                                             handleUpdates();
                                         },

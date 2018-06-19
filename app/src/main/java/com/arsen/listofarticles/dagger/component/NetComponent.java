@@ -11,6 +11,7 @@ import com.arsen.listofarticles.models.ArticleSingleModel;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.presenters.ArticleSinglePresenter;
 import com.arsen.listofarticles.presenters.ArticlesPresenter;
+import com.arsen.listofarticles.services.notifications.NotificationsService;
 
 import javax.inject.Singleton;
 
@@ -39,4 +40,7 @@ public interface NetComponent {
     void inject(ArticlesListActivity articlesListActivity);
 
     void inject(ArticleSingleViewActivity articleSingleViewActivity);
+
+    //services
+    void inject(NotificationsService notificationsService);
 }

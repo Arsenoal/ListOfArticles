@@ -71,6 +71,8 @@ public class ArticlesListActivity
         setupArticleClick();
 
         setupPinnedArticleClick();
+
+        setupNotificationsService();
     }
 
     private void initPresenter() {
