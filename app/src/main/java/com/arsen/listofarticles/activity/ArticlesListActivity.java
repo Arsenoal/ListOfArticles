@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.R;
@@ -42,6 +44,9 @@ public class ArticlesListActivity
     @BindView(R.id.pinned_items)
     HorizontalRecyclerView pinnedArticles;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+
     @Inject
     ArticlesPresenter articlesPresenter;
 
@@ -71,8 +76,6 @@ public class ArticlesListActivity
         setupArticleClick();
 
         setupPinnedArticleClick();
-
-        setupNotificationsService();
     }
 
     private void initPresenter() {
@@ -125,12 +128,22 @@ public class ArticlesListActivity
     }
 
     @Override
-    public void setupNotificationsService() {
+    public void startNotificationService() {
         try {
             startService(new Intent(this, NotificationsService.class));
         } catch (IllegalStateException ignored) {
             //android oreo case
         }
+    }
+
+    @Override
+    public void showLoader() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoader() {
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void setupInfiniteScroll() {

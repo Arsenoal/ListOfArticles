@@ -14,6 +14,7 @@ import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.rest.models.FilmsResponse;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
+import com.arsen.listofarticles.services.notifications.NotificationsService;
 import com.arsen.listofarticles.util.Constants;
 import com.arsen.listofarticles.util.Quad;
 import com.arsen.listofarticles.util.helper.NetworkHelper;
@@ -62,7 +63,9 @@ public class ArticlesPresenter {
         this.activity = (AppCompatActivity) articlesView.provideContext();
 
         ((App) activity.getApplication()).getNetComponent().inject(this);
-        isViewAttached = true;
+        this.isViewAttached = true;
+
+        this.articlesView.startNotificationService();
     }
 
     public void detachView() {
@@ -72,6 +75,8 @@ public class ArticlesPresenter {
     }
 
     public void startLoading() {
+        articlesView.showLoader();
+
         if (NetworkHelper.isNetworkAvailable(articlesView.provideContext())) {
             loadArticles(1);
             handleUpdates();
@@ -105,17 +110,23 @@ public class ArticlesPresenter {
                                     for (FilmsResponse.Response.Film.Field article : fields)
                                         if (!this.allArticles.contains(article))
                                             this.allArticles.add(article);
+
+                                    this.articlesView.hideLoader();
                                 },
                                 error -> {
                                     //TODO handle is left for future, for now just log what went wrong
                                     LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "error cause on getting films: %s", error.getCause()));
+                                    this.articlesView.hideLoader();
                                 }
                         ));
     }
 
     private void loadArticlesFromDb() {
         articlesView.invalidate();
-        articlesModel.loadArticlesFromDB(articles -> articlesView.addArticles(articles));
+        articlesModel.loadArticlesFromDB(articles -> {
+            this.articlesView.addArticles(articles);
+            this.articlesView.hideLoader();
+        });
     }
 
     private void loadPinnedArticles() {

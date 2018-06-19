@@ -12,6 +12,8 @@ public interface ArticlesView {
     void addPinnedArticles(ArrayList<? extends ArticleField> articles);
     void addPinnedArticle(ArticleField article);
     void invalidate();
-    void setupNotificationsService();
+    void startNotificationService();
+    void showLoader();
+    void hideLoader();
     Context provideContext();
 }
