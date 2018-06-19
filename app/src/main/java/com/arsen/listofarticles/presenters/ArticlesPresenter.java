@@ -10,6 +10,7 @@ import android.util.Pair;
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.activity.ArticleSingleViewActivity;
 import com.arsen.listofarticles.common.db.ArticlesTable;
+import com.arsen.listofarticles.interfaces.OnCompletedCallback;
 import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.rest.models.FilmsResponse;
@@ -47,6 +48,7 @@ public class ArticlesPresenter {
 
     public void detachView() {
         articlesView = null;
+        articlesModel.invalidate();
     }
 
     public void startLoading() {
@@ -98,8 +100,19 @@ public class ArticlesPresenter {
             cv.put(ArticlesTable.COLUMN.CATEGORY, articleField.getCategory());
             cv.put(ArticlesTable.COLUMN.THUMBNAIL, articleField.getThumbnail());
 
-            articlesModel.addArticleToDB(() -> LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "item successfully added to db: %s", articleField.getCategory())), cv);
+            articlesModel.addArticleToDB(new OnCompletedCallback() {
+                @Override
+                public void completed() {
+                    LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "item successfully added to db: %s", articleField.getCategory()));
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            }, cv);
         }
+
     }
 
     public void itemClicked(Pair<String, AppCompatImageView> pair) {

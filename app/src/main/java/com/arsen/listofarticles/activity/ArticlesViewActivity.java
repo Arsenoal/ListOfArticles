@@ -104,4 +104,10 @@ public class ArticlesViewActivity
                 .getArticleIdOnItemClick()
                 .subscribe(pair -> articlesPresenter.itemClicked(pair));
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        articlesPresenter.detachView();
+    }
 }

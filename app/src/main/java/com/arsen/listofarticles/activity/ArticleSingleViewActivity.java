@@ -5,6 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -23,8 +26,11 @@ import com.bumptech.glide.request.transition.Transition;
 
 import javax.inject.Inject;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 
 public class ArticleSingleViewActivity extends AppCompatActivity implements ArticleSingleView {
 
@@ -37,8 +43,20 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
     @BindView(R.id.article_category)
     AppCompatTextView categoryLabel;
 
+    @BindView(R.id.pin_to_dashboard)
+    FloatingActionButton pinToDashboard;
+
     @Inject
     ArticleSinglePresenter articleSinglePresenter;
+
+    @BindView(R.id.root_view)
+    CoordinatorLayout rootView;
+
+    @BindString(R.string.success_on_article_pin)
+    String successfullyPinned;
+
+    @BindString(R.string.error_on_article_pin)
+    String errorOnPin;
 
     private static int DP_200;
 
@@ -58,6 +76,12 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
 
     private void prepare() {
         DP_200 = ScreenHelper.convertDpToPixel(200);
+    }
+
+    @Optional
+    @OnClick(R.id.pin_to_dashboard)
+    void onPinCLicked() {
+        articleSinglePresenter.pinArticle();
     }
 
     @Override
@@ -103,5 +127,21 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
     @Override
     public Context provideContext() {
         return this;
+    }
+
+    @Override
+    public void successfullyPinned() {
+        Snackbar.make(rootView, successfullyPinned, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void errorOnPin() {
+        Snackbar.make(rootView, errorOnPin, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        articleSinglePresenter.detachView();
     }
 }

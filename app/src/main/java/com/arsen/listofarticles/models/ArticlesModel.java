@@ -46,7 +46,7 @@ public class ArticlesModel {
         Observable.fromCallable(() -> {
             ArrayList<ArticleField> articleFields = new ArrayList<>();
             Cursor cursor
-                    = dbHelper.getReadableDatabase().query(ArticlesTable.TABLE, null, null, null, null, null, null);
+                    = dbHelper.getReadableDatabase().query(ArticlesTable.ARTICLES_TABLE, null, null, null, null, null, null);
             while (cursor.moveToNext()) {
                 ArticleFieldBaseImpl article = new ArticleFieldBaseImpl();
                 article.setId(String.valueOf(cursor.getLong(cursor.getColumnIndex(ArticlesTable.COLUMN.ID))));
@@ -68,9 +68,9 @@ public class ArticlesModel {
     }
 
     public void addArticleToDB(OnCompletedCallback onCompletedCallback, ContentValues cv) {
-        if (!dbHelper.isItemPresent(cv.getAsString(ArticlesTable.COLUMN.TITLE))) {
+        if (!dbHelper.isItemPresent(ArticlesTable.ARTICLES_TABLE, cv.getAsString(ArticlesTable.COLUMN.TITLE))) {
             Observable.fromCallable(() -> {
-                dbHelper.getWritableDatabase().insert(ArticlesTable.TABLE, null, cv);
+                dbHelper.getWritableDatabase().insert(ArticlesTable.ARTICLES_TABLE, null, cv);
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {

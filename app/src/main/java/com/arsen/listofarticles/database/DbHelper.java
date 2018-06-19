@@ -20,15 +20,16 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(ArticlesTable.CREATE_SCRIPT);
+        db.execSQL(ArticlesTable.CREATE_PINNED_ARTICLES_SCRIPT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
 
-    public boolean isItemPresent(String title) {
+    public boolean isItemPresent(String table, String title) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query
-                = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE %s = \"%s\"", ArticlesTable.TABLE, ArticlesTable.COLUMN.TITLE, title);
+                = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE %s = \"%s\"", table, ArticlesTable.COLUMN.TITLE, title);
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.getCount() <= 0){
             cursor.close();

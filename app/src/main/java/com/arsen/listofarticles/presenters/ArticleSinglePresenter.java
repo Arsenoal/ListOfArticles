@@ -1,12 +1,16 @@
 package com.arsen.listofarticles.presenters;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.arsen.listofarticles.App;
+import com.arsen.listofarticles.common.db.ArticlesTable;
+import com.arsen.listofarticles.interfaces.OnCompletedCallback;
 import com.arsen.listofarticles.interfaces.view.ArticleSingleView;
 import com.arsen.listofarticles.models.ArticleSingleModel;
-import com.arsen.listofarticles.rest.services.ArticlesService;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.util.Constants;
 
 import javax.inject.Inject;
@@ -21,10 +25,8 @@ public class ArticleSinglePresenter {
     @Inject
     ArticleSingleModel articleSingleModel;
 
-    @Inject
-    ArticlesService articlesService;
-
     private ArticleSingleView articleSingleView;
+    private ArticleField articleField;
     private AppCompatActivity appCompatActivity;
     private String id;
 
@@ -43,11 +45,12 @@ public class ArticleSinglePresenter {
 
     public void detachView() {
         this.articleSingleView = null;
+        this.articleSingleModel.invalidate();
     }
 
     public void loadData() {
         articleSingleModel.loadData(
-                articlesService.
+                articleSingleModel.getArticlesService().
                         getArticle(
                                 id,
                                 Constants.API_KEY,
@@ -56,12 +59,36 @@ public class ArticleSinglePresenter {
                         observeOn(AndroidSchedulers.mainThread()).
                         map(article -> article).
                         subscribe(
-                                article -> articleSingleView.loadData(article.getResponse().getContent().getFields()),
-                                error -> {
-                                    //TODO implement UI presentation, for now just print stacktrace
-                                    error.printStackTrace();
-                                }
+                                article -> {
+                                    articleField = article.getResponse().getContent().getFields();
+                                    articleSingleView.loadData(articleField);
+                                },
+                                Throwable::printStackTrace
                         )
         );
+    }
+
+    public void pinArticle() {
+        if (articleField != null) {
+            ContentValues cv;
+
+            cv = new ContentValues(3);
+            cv.put(ArticlesTable.COLUMN.TITLE, articleField.getTitle());
+            cv.put(ArticlesTable.COLUMN.CATEGORY, articleField.getCategory());
+            cv.put(ArticlesTable.COLUMN.THUMBNAIL, articleField.getThumbnail());
+
+            articleSingleModel.addPinnedArticleToDB(
+                    new OnCompletedCallback() {
+                        @Override
+                        public void completed() {
+                            articleSingleView.successfullyPinned();
+                        }
+
+                        @Override
+                        public void onError() {
+                            articleSingleView.errorOnPin();
+                        }
+                    }, cv);
+        }
     }
 }

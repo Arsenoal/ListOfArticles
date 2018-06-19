@@ -3,7 +3,8 @@ package com.arsen.listofarticles.common.db;
 import java.util.Locale;
 
 public class ArticlesTable {
-    public static final String TABLE = "articles";
+    public static final String ARTICLES_TABLE = "articles";
+    public static final String PINNED_ARTICLES_TABLE = "pinned_articles";
 
     public static class COLUMN {
         public static final String ID = "_id";
@@ -18,5 +19,14 @@ public class ArticlesTable {
                             + "%s text,"
                             + "%s text,"
                             + "%s text" + ");",
-                    TABLE, COLUMN.ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
+                    ARTICLES_TABLE, COLUMN.ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
+
+    public static final String CREATE_PINNED_ARTICLES_SCRIPT =
+            String.format(Locale.ENGLISH, "create table if not exists %s ("
+                            + "%s integer primary key autoincrement,"
+                            + "%s text,"
+                            + "%s text,"
+                            + "%s text" + ");",
+                    PINNED_ARTICLES_TABLE, COLUMN.ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
+
 }
