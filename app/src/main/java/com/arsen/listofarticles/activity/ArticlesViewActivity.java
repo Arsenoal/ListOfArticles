@@ -3,16 +3,19 @@ package com.arsen.listofarticles.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.common.adapter.ArticlesAdapter;
+import com.arsen.listofarticles.common.adapter.PinnedArticlesAdapter;
 import com.arsen.listofarticles.custom_layout_managers.WrapContentLinearLayoutManager;
 import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.listeners.EndlessRecyclerViewScrollListener;
 import com.arsen.listofarticles.presenters.ArticlesPresenter;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
+import com.arsen.listofarticles.widgets.HorizontalRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -32,27 +35,33 @@ public class ArticlesViewActivity
     @BindView(R.id.articles_list)
     RecyclerView articlesList;
 
+    @BindView(R.id.pinned_items)
+    HorizontalRecyclerView pinnedArticles;
+
     @Inject
     ArticlesPresenter articlesPresenter;
 
     private ArticlesAdapter articlesAdapter;
+    private PinnedArticlesAdapter pinnedArticlesAdapter;
     private WrapContentLinearLayoutManager wrapContentLinearLayoutManager;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_articles_list);
         ButterKnife.bind(this);
         ((App) getApplication()).getNetComponent().inject(this);
 
-        initArticlesList();
+        prepareArticlesList();
+
+        preparePinnedArticles();
 
         initPresenter();
 
         setupInfiniteScroll();
 
-        setupItemClick();
+        setupArticleClick();
     }
 
     private void initPresenter() {
@@ -79,16 +88,29 @@ public class ArticlesViewActivity
         articlesList.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
-    private void initArticlesList() {
+    private void prepareArticlesList() {
         articlesAdapter = new ArticlesAdapter();
         wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(this);
         articlesList.setLayoutManager(wrapContentLinearLayoutManager);
         articlesList.setAdapter(articlesAdapter);
     }
 
+    private void preparePinnedArticles() {
+        pinnedArticlesAdapter = new PinnedArticlesAdapter();
+        WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(this);
+        wrapContentLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        pinnedArticles.setLayoutManager(wrapContentLinearLayoutManager);
+        pinnedArticles.setAdapter(pinnedArticlesAdapter);
+    }
+
     @Override
     public Context provideContext() {
         return this;
+    }
+
+    @Override
+    public void addPinnedArticles(ArrayList<? extends ArticleField> articles) {
+        pinnedArticlesAdapter.addArticles(articles);
     }
 
     @Override
@@ -99,7 +121,7 @@ public class ArticlesViewActivity
             articlesAdapter.reset();
     }
 
-    public void setupItemClick() {
+    public void setupArticleClick() {
         articlesAdapter
                 .getArticleIdOnItemClick()
                 .subscribe(pair -> articlesPresenter.itemClicked(pair));

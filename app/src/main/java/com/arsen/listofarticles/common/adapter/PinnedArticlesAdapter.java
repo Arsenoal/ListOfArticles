@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +21,10 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-
-public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticleHolder> {
-    private ArrayList<ArticleField> articles;
+public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAdapter.ArticleHolder> {
+    private ArrayList<ArticleField> pinnedArticles;
     private AppCompatActivity appCompatActivity;
-    private final int DP_150;
-    private final PublishSubject<Pair<String, AppCompatImageView>> onClickSubject;
-
-    public ArticlesAdapter() {
-        this.articles = new ArrayList<>();
-        this.DP_150 = ScreenHelper.convertDpToPixel(150);
-        this.onClickSubject = PublishSubject.create();
-    }
+    private final int DP_120;
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -44,30 +32,26 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         appCompatActivity = (AppCompatActivity) recyclerView.getContext();
     }
 
+    public PinnedArticlesAdapter() {
+        this.pinnedArticles = new ArrayList<>();
+        this.DP_120 = ScreenHelper.convertDpToPixel(120);
+    }
+
     class ArticleHolder extends RecyclerView.ViewHolder {
-        View rootView;
-        AppCompatTextView articleCategory;
-        AppCompatTextView articleTitle;
         AppCompatImageView articleImage;
 
-        ArticleHolder(View view) {
-            super(view);
+        ArticleHolder(View itemView) {
+            super(itemView);
 
-            this.rootView = view;
-
-            articleImage = view.findViewById(R.id.article_img);
-            articleTitle = view.findViewById(R.id.article_title);
-            articleCategory = view.findViewById(R.id.article_category);
+            articleImage = itemView.findViewById(R.id.article_image);
         }
 
-        void bind(ArticleField article) {
-            String thumbNail = article.getThumbnail();
-
+        void bind(String imageUrl) {
             if (!appCompatActivity.isDestroyed()) {
-                if (thumbNail != null)
+                if (imageUrl != null)
                     Glide.
                             with(appCompatActivity).
-                            load(thumbNail).
+                            load(imageUrl).
                             apply(RequestOptions.centerCropTransform()).
                             into(new BaseTarget<Drawable>() {
                                 @Override
@@ -77,7 +61,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
 
                                 @Override
                                 public void getSize(@NonNull SizeReadyCallback cb) {
-                                    cb.onSizeReady(SIZE_ORIGINAL, DP_150);
+                                    cb.onSizeReady(DP_120, DP_120);
                                 }
 
                                 @Override
@@ -89,47 +73,34 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
                     articleImage.setImageResource(R.drawable.ic_android);
             }
 
-            String title = article.getTitle();
-            String category = article.getCategory();
-
-            if (title != null) articleTitle.setText(title);
-            if (category != null) articleCategory.setText(category);
-
         }
     }
 
     @NonNull
     @Override
     public ArticleHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.article_recycler_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pinned_article_recycler_item, parent, false);
 
         return new ArticleHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ArticleHolder holder, int position) {
-        ArticleField articleField = articles.get(position);
-        holder.bind(articleField);
-
-        holder.rootView.setOnClickListener(v -> onClickSubject.onNext(new Pair<>(articleField.getId(), holder.articleImage)));
-    }
-
-    public void addArticles(ArrayList<? extends ArticleField> newArticles) {
-        articles.addAll(newArticles);
-        notifyItemRangeChanged(articles.size() - newArticles.size(), newArticles.size());
+        holder.bind(pinnedArticles.get(position).getThumbnail());
     }
 
     @Override
     public int getItemCount() {
-        return articles.size();
+        return pinnedArticles.size();
     }
 
-    public void reset() {
-        articles.clear();
-        notifyDataSetChanged();
+    public void addArticles(ArrayList<? extends ArticleField> articleFields) {
+        pinnedArticles.addAll(articleFields);
+        notifyItemRangeChanged(pinnedArticles.size() - articleFields.size(), articleFields.size());
     }
 
-    public Observable<Pair<String, AppCompatImageView>> getArticleIdOnItemClick() {
-        return onClickSubject.as(upstream -> upstream);
+    public void addArticle(ArticleField articleField) {
+        pinnedArticles.add(articleField);
+        notifyItemInserted(pinnedArticles.size() - 1);
     }
 }

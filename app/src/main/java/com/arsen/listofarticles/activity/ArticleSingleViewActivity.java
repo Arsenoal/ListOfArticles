@@ -82,6 +82,7 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
     @OnClick(R.id.pin_to_dashboard)
     void onPinCLicked() {
         articleSinglePresenter.pinArticle();
+        pinToDashboard.setClickable(false);
     }
 
     @Override
@@ -132,11 +133,13 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
     @Override
     public void successfullyPinned() {
         Snackbar.make(rootView, successfullyPinned, Snackbar.LENGTH_SHORT).show();
+        pinToDashboard.setClickable(true);
     }
 
     @Override
     public void errorOnPin() {
         Snackbar.make(rootView, errorOnPin, Snackbar.LENGTH_SHORT).show();
+        pinToDashboard.setClickable(true);
     }
 
     @Override

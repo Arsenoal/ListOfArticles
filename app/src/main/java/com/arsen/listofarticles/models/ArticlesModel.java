@@ -67,6 +67,31 @@ public class ArticlesModel {
                 );
     }
 
+    public void loadPinnedArticlesFromDB(LoadArticlesCallback loadArticlesCallback) {
+        Observable.fromCallable(() -> {
+            ArrayList<ArticleField> articleFields = new ArrayList<>();
+            Cursor cursor
+                    = dbHelper.getReadableDatabase().query(ArticlesTable.PINNED_ARTICLES_TABLE, null, null, null, null, null, null);
+            while (cursor.moveToNext()) {
+                ArticleFieldBaseImpl article = new ArticleFieldBaseImpl();
+                article.setId(String.valueOf(cursor.getLong(cursor.getColumnIndex(ArticlesTable.COLUMN.ARTICLE_ID))));
+                article.setTitle(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.TITLE)));
+                article.setCategory(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.CATEGORY)));
+                article.setThumbnail(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.THUMBNAIL)));
+                articleFields.add(article);
+            }
+            cursor.close();
+
+            return articleFields;
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        loadArticlesCallback::onLoad,
+                        Throwable::printStackTrace
+                );
+    }
+
     public void addArticleToDB(OnCompletedCallback onCompletedCallback, ContentValues cv) {
         if (!dbHelper.isItemPresent(ArticlesTable.ARTICLES_TABLE, cv.getAsString(ArticlesTable.COLUMN.TITLE))) {
             Observable.fromCallable(() -> {

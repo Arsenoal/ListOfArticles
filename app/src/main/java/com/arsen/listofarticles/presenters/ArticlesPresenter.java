@@ -19,6 +19,7 @@ import com.arsen.listofarticles.util.Constants;
 import com.arsen.listofarticles.util.helper.NetworkHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +57,8 @@ public class ArticlesPresenter {
             loadArticles(1);
         else
             loadArticlesFromDb();
+
+        loadPinnedArticles();
     }
 
     public void loadArticles(int page) {
@@ -90,6 +93,10 @@ public class ArticlesPresenter {
     private void loadArticlesFromDb() {
         articlesView.invalidate();
         articlesModel.loadArticlesFromDB(articles -> articlesView.addArticles(articles));
+    }
+
+    private void loadPinnedArticles() {
+        articlesModel.loadPinnedArticlesFromDB(articles -> articlesView.addPinnedArticles(articles));
     }
 
     private void addArticleToDb(ArrayList<? extends ArticleField> articles) {

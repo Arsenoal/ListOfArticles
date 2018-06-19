@@ -8,6 +8,7 @@ public class ArticlesTable {
 
     public static class COLUMN {
         public static final String ID = "_id";
+        public static final String ARTICLE_ID = "article_id";
         public static final String TITLE = "title";
         public static final String CATEGORY = "category";
         public static final String THUMBNAIL = "thumbnail";
@@ -27,6 +28,6 @@ public class ArticlesTable {
                             + "%s text,"
                             + "%s text,"
                             + "%s text" + ");",
-                    PINNED_ARTICLES_TABLE, COLUMN.ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
+                    PINNED_ARTICLES_TABLE, COLUMN.ARTICLE_ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
 
 }

@@ -72,7 +72,8 @@ public class ArticleSinglePresenter {
         if (articleField != null) {
             ContentValues cv;
 
-            cv = new ContentValues(3);
+            cv = new ContentValues(4);
+            cv.put(ArticlesTable.COLUMN.ARTICLE_ID, articleField.getId());
             cv.put(ArticlesTable.COLUMN.TITLE, articleField.getTitle());
             cv.put(ArticlesTable.COLUMN.CATEGORY, articleField.getCategory());
             cv.put(ArticlesTable.COLUMN.THUMBNAIL, articleField.getThumbnail());

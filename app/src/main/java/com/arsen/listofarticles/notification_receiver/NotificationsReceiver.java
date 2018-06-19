@@ -1,4 +1,4 @@
-package com.arsen.listofarticles.notifications;
+package com.arsen.listofarticles.notification_receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

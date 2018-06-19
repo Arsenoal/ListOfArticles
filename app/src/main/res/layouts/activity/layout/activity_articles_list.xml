@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_color_white"
+    tools:context="com.arsen.listofarticles.activity.ArticlesViewActivity">
+
+    <com.arsen.listofarticles.widgets.HorizontalRecyclerView
+        android:id="@+id/pinned_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/app_margin_top"
+        android:layout_marginEnd="@dimen/app_margin_end"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/articles_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/app_margin_top"
+        app:layout_constraintTop_toBottomOf="@id/pinned_items" />
+
+</android.support.constraint.ConstraintLayout>
