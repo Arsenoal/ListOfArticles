@@ -40,7 +40,7 @@ public class NotificationsService extends Service {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationsService.class.getSimpleName());
 
-    private int serviceId = 1;
+    private int notificationId = 1;
 
     private NotificationManagerCompat notificationManager;
 
@@ -93,6 +93,8 @@ public class NotificationsService extends Service {
 
                                     if (fields != null && !fields.isEmpty())
                                         sendNotification(fields.get(fields.size() - 1).getCategory(), fields.get(fields.size() - 1).getTitle());
+                                    notificationId++;
+
                                 },
                                 Throwable::printStackTrace
                         )
@@ -133,7 +135,7 @@ public class NotificationsService extends Service {
                 notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(serviceId, notification);
+        notificationManager.notify(notificationId, notification);
     }
 
     @Nullable
