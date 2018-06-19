@@ -12,8 +12,8 @@ import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import java.util.Locale;
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final String NAME = "listOfArticles";
-    public static final int VERSION = 1;
+    private static final String NAME = "listOfArticles";
+    private static final int VERSION = 1;
 
     public DbHelper(Context context) {
         super(context, NAME, null, VERSION);

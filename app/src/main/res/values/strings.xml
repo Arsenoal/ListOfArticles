@@ -3,4 +3,10 @@
 
     <string name="success_on_article_pin">Article successfully pinned</string>
     <string name="error_on_article_pin">Article has already been pinned</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+
+    <string name="channel_name">New article</string>
+    <string name="channel_description">New article is available</string>
 </resources>

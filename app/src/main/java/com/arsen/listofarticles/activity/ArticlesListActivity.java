@@ -1,6 +1,7 @@
 package com.arsen.listofarticles.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.listeners.EndlessRecyclerViewScrollListener;
 import com.arsen.listofarticles.presenters.ArticlesPresenter;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
+import com.arsen.listofarticles.services.notifications.NotificationsService;
 import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.arsen.listofarticles.widgets.HorizontalRecyclerView;
 
@@ -51,16 +53,12 @@ public class ArticlesListActivity
     @BindDimen(R.dimen.pinned_articles_full_height)
     int pinnedArticlesFullHeight;
 
-    private int fullPinnedArticlesHeightDP;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articles_list);
         ButterKnife.bind(this);
         ((App) getApplication()).getNetComponent().inject(this);
-
-        fullPinnedArticlesHeightDP = ScreenHelper.convertDpToPixel(pinnedArticlesFullHeight);
 
         prepareArticlesList();
 
@@ -89,34 +87,6 @@ public class ArticlesListActivity
     @Override
     public void addNewArticle(ArticleField article) {
         articlesAdapter.addNewArticle(article);
-    }
-
-    private void setupInfiniteScroll() {
-        endlessRecyclerViewScrollListener
-                = new EndlessRecyclerViewScrollListener(wrapContentLinearLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                articlesPresenter.loadArticles(page);
-                LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "page: %s", page));
-            }
-        };
-
-        articlesList.addOnScrollListener(endlessRecyclerViewScrollListener);
-    }
-
-    private void prepareArticlesList() {
-        articlesAdapter = new ArticlesAdapter();
-        wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(this);
-        articlesList.setLayoutManager(wrapContentLinearLayoutManager);
-        articlesList.setAdapter(articlesAdapter);
-    }
-
-    private void preparePinnedArticles() {
-        pinnedArticlesAdapter = new PinnedArticlesAdapter();
-        WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(this);
-        wrapContentLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        pinnedArticles.setLayoutManager(wrapContentLinearLayoutManager);
-        pinnedArticles.setAdapter(pinnedArticlesAdapter);
     }
 
     @Override
@@ -150,6 +120,39 @@ public class ArticlesListActivity
             endlessRecyclerViewScrollListener.resetState();
         if (articlesAdapter != null)
             articlesAdapter.reset();
+    }
+
+    @Override
+    public void setupNotificationsService() {
+        startService(new Intent(this, NotificationsService.class));
+    }
+
+    private void setupInfiniteScroll() {
+        endlessRecyclerViewScrollListener
+                = new EndlessRecyclerViewScrollListener(wrapContentLinearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                articlesPresenter.loadArticles(page);
+                LOGGER.log(Level.INFO, String.format(Locale.ENGLISH, "page: %s", page));
+            }
+        };
+
+        articlesList.addOnScrollListener(endlessRecyclerViewScrollListener);
+    }
+
+    private void prepareArticlesList() {
+        articlesAdapter = new ArticlesAdapter();
+        wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(this);
+        articlesList.setLayoutManager(wrapContentLinearLayoutManager);
+        articlesList.setAdapter(articlesAdapter);
+    }
+
+    private void preparePinnedArticles() {
+        pinnedArticlesAdapter = new PinnedArticlesAdapter();
+        WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(this);
+        wrapContentLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        pinnedArticles.setLayoutManager(wrapContentLinearLayoutManager);
+        pinnedArticles.setAdapter(pinnedArticlesAdapter);
     }
 
     public void setupArticleClick() {

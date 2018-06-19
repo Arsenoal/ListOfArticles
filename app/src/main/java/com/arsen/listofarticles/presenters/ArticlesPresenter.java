@@ -33,6 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.arsen.listofarticles.util.Constants.ARTICLE_DB_ID_KEY;
 import static com.arsen.listofarticles.util.Constants.ARTICLE_ID_KEY;
+import static com.arsen.listofarticles.util.Constants.LIST_UPDATE_TIME;
 
 public class ArticlesPresenter {
     private static final Logger LOGGER = Logger.getLogger(ArticlesPresenter.class.getSimpleName());
@@ -136,7 +137,7 @@ public class ArticlesPresenter {
 
     private void handleUpdates() {
         if (isViewAttached)
-            mTimer.schedule(new UpdateTask(), 30000);
+            mTimer.schedule(new UpdateTask(), LIST_UPDATE_TIME);
     }
 
     private void addArticlesToDb(ArrayList<? extends ArticleField> articles) {
