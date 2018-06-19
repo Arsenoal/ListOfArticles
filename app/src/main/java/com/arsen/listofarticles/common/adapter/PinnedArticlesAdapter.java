@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
+import com.arsen.listofarticles.util.Trio;
 import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,7 +30,7 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
 
     private ArrayList<ArticleField> pinnedArticles;
     private AppCompatActivity appCompatActivity;
-    private PublishSubject<Pair<String, AppCompatImageView>> onClickSubject;
+    private PublishSubject<Trio<String, String, AppCompatImageView>> onClickSubject;
     private final int DP_120;
 
     @Override
@@ -82,7 +83,7 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
                     articleImage.setImageResource(R.drawable.ic_android);
             }
 
-            itemView.setOnClickListener(v -> onClickSubject.onNext(new Pair<>(articleField.getId(), articleImage)));
+            itemView.setOnClickListener(v -> onClickSubject.onNext(new Trio<>(articleField.getArticleId(), articleField.getId(), articleImage)));
         }
     }
 
@@ -114,7 +115,11 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
         notifyItemInserted(pinnedArticles.size() - 1);
     }
 
-    public Observable<Pair<String, AppCompatImageView>> getArticleOnItemClick() {
+    public Observable<Trio<String, String, AppCompatImageView>> getArticleOnItemClick() {
         return onClickSubject.as(upstream -> upstream);
+    }
+
+    public int getLastItemsPosition() {
+        return pinnedArticles.size() - 1;
     }
 }

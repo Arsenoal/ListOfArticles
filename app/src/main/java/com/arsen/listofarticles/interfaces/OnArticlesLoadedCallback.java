@@ -4,6 +4,6 @@ import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 
 import java.util.ArrayList;
 
-public interface LoadArticlesCallback {
+public interface OnArticlesLoadedCallback {
     void onLoad(ArrayList<? extends ArticleField> article);
 }

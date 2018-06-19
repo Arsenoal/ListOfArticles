@@ -7,13 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
+import com.arsen.listofarticles.util.Trio;
 import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,7 +30,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     private ArrayList<ArticleField> articles;
     private AppCompatActivity appCompatActivity;
     private final int DP_150;
-    private final PublishSubject<Pair<String, AppCompatImageView>> onClickSubject;
+    private final PublishSubject<Trio<String, String, AppCompatImageView>> onClickSubject;
 
     public ArticlesAdapter() {
         this.articles = new ArrayList<>();
@@ -96,7 +96,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
             if (category != null) articleCategory.setText(category);
 
 
-            rootView.setOnClickListener(v -> onClickSubject.onNext(new Pair<>(article.getId(), articleImage)));
+            rootView.setOnClickListener(v -> onClickSubject.onNext(new Trio<>(article.getArticleId(), article.getId(), articleImage)));
         }
     }
 
@@ -118,6 +118,11 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         notifyItemRangeChanged(articles.size() - newArticles.size(), newArticles.size());
     }
 
+    public void addNewArticle(ArticleField articleField) {
+        articles.add(0, articleField);
+        notifyItemInserted(0);
+    }
+
     @Override
     public int getItemCount() {
         return articles.size();
@@ -128,7 +133,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         notifyDataSetChanged();
     }
 
-    public Observable<Pair<String, AppCompatImageView>> getArticleIdOnItemClick() {
+    public Observable<Trio<String, String, AppCompatImageView>> getArticleIdOnItemClick() {
         return onClickSubject.as(upstream -> upstream);
     }
 }

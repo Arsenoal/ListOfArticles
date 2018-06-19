@@ -71,7 +71,7 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
         prepare();
 
         articleSinglePresenter.attachView(this);
-        articleSinglePresenter.loadData();
+        articleSinglePresenter.startLoading();
     }
 
     private void prepare() {

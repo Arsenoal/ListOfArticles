@@ -123,12 +123,41 @@ public class FilmsResponse {
                 }
 
                 @Override
-                public String getId() {
+                public String getArticleId() {
                     return this.id;
+                }
+
+                @Override
+                public String getId() {
+                    return null;
                 }
 
                 void setId(String id) {
                     this.id = id;
+                }
+
+                @Override
+                public boolean equals(Object o) {
+                    if (!(o instanceof Field)) return false;
+
+                    Field field = (Field) o;
+
+                    return
+                            getArticleId().equals(field.getArticleId())
+                                    && (getCategory() != null ? getCategory().equals(field.getCategory()) : field.getCategory() == null)
+                                    && (headline != null ? headline.equals(field.headline) : field.headline == null)
+                                    && (getShortUrl() != null ? getShortUrl().equals(field.getShortUrl()) : field.getShortUrl() == null)
+                                    && (getThumbnail() != null ? getThumbnail().equals(field.getThumbnail()) : field.getThumbnail() == null);
+                }
+
+                @Override
+                public int hashCode() {
+                    int result = getArticleId().hashCode();
+                    result = 31 * result + (getCategory() != null ? getCategory().hashCode() : 0);
+                    result = 31 * result + (headline != null ? headline.hashCode() : 0);
+                    result = 31 * result + (getShortUrl() != null ? getShortUrl().hashCode() : 0);
+                    result = 31 * result + (getThumbnail() != null ? getThumbnail().hashCode() : 0);
+                    return result;
                 }
             }
         }

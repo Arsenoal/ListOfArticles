@@ -2,26 +2,23 @@ package com.arsen.listofarticles.presenters;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageView;
-import android.util.Pair;
 
 import com.arsen.listofarticles.App;
-import com.arsen.listofarticles.activity.ArticleSingleViewActivity;
 import com.arsen.listofarticles.common.db.ArticlesTable;
 import com.arsen.listofarticles.interfaces.OnCompletedCallback;
 import com.arsen.listofarticles.interfaces.view.ArticleSingleView;
 import com.arsen.listofarticles.models.ArticleSingleModel;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.util.Constants;
+import com.arsen.listofarticles.util.helper.NetworkHelper;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.arsen.listofarticles.util.Constants.ARTICLE_DB_ID_KEY;
 import static com.arsen.listofarticles.util.Constants.ARTICLE_ID_KEY;
 
 public class ArticleSinglePresenter {
@@ -32,7 +29,8 @@ public class ArticleSinglePresenter {
     private ArticleSingleView articleSingleView;
     private ArticleField articleField;
     private AppCompatActivity appCompatActivity;
-    private String id;
+    private String ID;
+    private String dbID;
 
     public void attachView(ArticleSingleView articleSingleView) {
         this.articleSingleView = articleSingleView;
@@ -44,7 +42,8 @@ public class ArticleSinglePresenter {
 
     private void initId() {
         Intent intent = appCompatActivity.getIntent();
-        id = intent.getStringExtra(ARTICLE_ID_KEY);
+        ID = intent.getStringExtra(ARTICLE_ID_KEY);
+        dbID = intent.getStringExtra(ARTICLE_DB_ID_KEY);
     }
 
     public void detachView() {
@@ -52,11 +51,18 @@ public class ArticleSinglePresenter {
         this.articleSingleModel.invalidate();
     }
 
-    public void loadData() {
+    public void startLoading() {
+        if (NetworkHelper.isNetworkAvailable(appCompatActivity))
+            loadArticle();
+        else
+            loadArticleFromDB(dbID);
+    }
+
+    private void loadArticle() {
         articleSingleModel.loadData(
                 articleSingleModel.getArticlesService().
                         getArticle(
-                                id,
+                                ID,
                                 Constants.API_KEY,
                                 Constants.FIELDS).
                         subscribeOn(Schedulers.io()).
@@ -72,12 +78,19 @@ public class ArticleSinglePresenter {
         );
     }
 
+    private void loadArticleFromDB(String dbID) {
+        articleSingleModel.loadArticleFromDB(article -> {
+            articleField = article;
+            articleSingleView.loadData(articleField);
+        }, dbID);
+    }
+
     public void pinArticle() {
         if (articleField != null) {
             ContentValues cv;
 
             cv = new ContentValues(4);
-            cv.put(ArticlesTable.COLUMN.ARTICLE_ID, id);
+            cv.put(ArticlesTable.COLUMN.ARTICLE_ID, ID);
             cv.put(ArticlesTable.COLUMN.TITLE, articleField.getTitle());
             cv.put(ArticlesTable.COLUMN.CATEGORY, articleField.getCategory());
             cv.put(ArticlesTable.COLUMN.THUMBNAIL, articleField.getThumbnail());

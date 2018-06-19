@@ -19,8 +19,9 @@ public class ArticlesTable {
                             + "%s integer primary key autoincrement,"
                             + "%s text,"
                             + "%s text,"
+                            + "%s text,"
                             + "%s text" + ");",
-                    ARTICLES_TABLE, COLUMN.ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
+                    ARTICLES_TABLE, COLUMN.ID, COLUMN.ARTICLE_ID, COLUMN.TITLE, COLUMN.CATEGORY, COLUMN.THUMBNAIL);
 
     public static final String CREATE_PINNED_ARTICLES_SCRIPT =
             String.format(Locale.ENGLISH, "create table if not exists %s ("

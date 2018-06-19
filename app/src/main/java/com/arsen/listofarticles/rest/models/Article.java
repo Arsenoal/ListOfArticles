@@ -47,6 +47,11 @@ public class Article {
                     return null;
                 }
 
+                @Override
+                public String getArticleId() {
+                    return this.id;
+                }
+
                 void setId(String id) {
                     this.id = id;
                 }

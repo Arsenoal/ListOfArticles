@@ -5,4 +5,5 @@
     <dimen name="app_margin_top">25dp</dimen>
     <dimen name="items_margin_start">16dp</dimen>
     <dimen name="article_recycler_item_header_height">110dp</dimen>
+    <dimen name="pinned_articles_full_height">145dp</dimen>
 </resources>

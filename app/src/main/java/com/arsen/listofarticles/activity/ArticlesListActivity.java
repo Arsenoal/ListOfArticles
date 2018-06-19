@@ -2,7 +2,6 @@ package com.arsen.listofarticles.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +15,7 @@ import com.arsen.listofarticles.interfaces.view.ArticlesView;
 import com.arsen.listofarticles.listeners.EndlessRecyclerViewScrollListener;
 import com.arsen.listofarticles.presenters.ArticlesPresenter;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
+import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.arsen.listofarticles.widgets.HorizontalRecyclerView;
 
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -47,12 +48,19 @@ public class ArticlesListActivity
     private WrapContentLinearLayoutManager wrapContentLinearLayoutManager;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
+    @BindDimen(R.dimen.pinned_articles_full_height)
+    int pinnedArticlesFullHeight;
+
+    private int fullPinnedArticlesHeightDP;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articles_list);
         ButterKnife.bind(this);
         ((App) getApplication()).getNetComponent().inject(this);
+
+        fullPinnedArticlesHeightDP = ScreenHelper.convertDpToPixel(pinnedArticlesFullHeight);
 
         prepareArticlesList();
 
@@ -76,6 +84,11 @@ public class ArticlesListActivity
     @Override
     public void addArticles(ArrayList<? extends ArticleField> articles) {
         articlesAdapter.addArticles(articles);
+    }
+
+    @Override
+    public void addNewArticle(ArticleField article) {
+        articlesAdapter.addNewArticle(article);
     }
 
     private void setupInfiniteScroll() {
@@ -113,12 +126,22 @@ public class ArticlesListActivity
 
     @Override
     public void addPinnedArticles(ArrayList<? extends ArticleField> articles) {
-        pinnedArticlesAdapter.addArticles(articles);
+        if (articles.size() == 0)
+            articlesList.setPadding(0, 0, 0, 0);
+        else {
+            pinnedArticlesAdapter.addArticles(articles);
+            articlesList.setPadding(0, 0, 0, pinnedArticlesFullHeight);
+        }
     }
 
     @Override
     public void addPinnedArticle(ArticleField article) {
         pinnedArticlesAdapter.addArticle(article);
+        int lastItemPosition = pinnedArticlesAdapter.getLastItemsPosition();
+        pinnedArticles.smoothScrollToPosition(lastItemPosition);
+
+        if (lastItemPosition == 0)
+            articlesList.setPadding(0, 0, 0, pinnedArticlesFullHeight);
     }
 
     @Override
@@ -132,7 +155,9 @@ public class ArticlesListActivity
     public void setupArticleClick() {
         articlesAdapter
                 .getArticleIdOnItemClick()
-                .subscribe(pair -> articlesPresenter.articleClicked(pair));
+                .subscribe(pair ->
+                        articlesPresenter.articleClicked(pair)
+                );
     }
 
     public void setupPinnedArticleClick() {

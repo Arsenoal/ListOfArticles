@@ -5,6 +5,7 @@ import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 public class ArticleFieldBaseImpl implements ArticleField {
 
     private String id;
+    private String articleId;
     private String title;
     private String thumbnail;
     private String category;
@@ -23,6 +24,15 @@ public class ArticleFieldBaseImpl implements ArticleField {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
+    }
+
+    @Override
+    public String getArticleId() {
+        return articleId;
     }
 
     @Override

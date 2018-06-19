@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public interface ArticlesView {
     void addArticles(ArrayList<? extends ArticleField> articles);
+    void addNewArticle(ArticleField article);
     void addPinnedArticles(ArrayList<? extends ArticleField> articles);
     void addPinnedArticle(ArticleField article);
     void invalidate();

@@ -9,7 +9,7 @@ import com.arsen.listofarticles.common.db.ArticlesTable;
 import com.arsen.listofarticles.rest.models.ArticleFieldBaseImpl;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.database.DbHelper;
-import com.arsen.listofarticles.interfaces.LoadArticlesCallback;
+import com.arsen.listofarticles.interfaces.OnArticlesLoadedCallback;
 import com.arsen.listofarticles.interfaces.OnCompletedCallback;
 import com.arsen.listofarticles.rest.services.ArticlesService;
 
@@ -42,7 +42,7 @@ public class ArticlesModel {
         compositeDisposable.add(disposable);
     }
 
-    public void loadArticlesFromDB(LoadArticlesCallback loadArticlesCallback) {
+    public void loadArticlesFromDB(OnArticlesLoadedCallback onArticlesLoadedCallback) {
         Observable.fromCallable(() -> {
             ArrayList<ArticleField> articleFields = new ArrayList<>();
             Cursor cursor
@@ -50,6 +50,7 @@ public class ArticlesModel {
             while (cursor.moveToNext()) {
                 ArticleFieldBaseImpl article = new ArticleFieldBaseImpl();
                 article.setId(String.valueOf(cursor.getLong(cursor.getColumnIndex(ArticlesTable.COLUMN.ID))));
+                article.setArticleId(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.ARTICLE_ID)));
                 article.setTitle(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.TITLE)));
                 article.setCategory(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.CATEGORY)));
                 article.setThumbnail(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.THUMBNAIL)));
@@ -62,19 +63,20 @@ public class ArticlesModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        loadArticlesCallback::onLoad,
+                        onArticlesLoadedCallback::onLoad,
                         Throwable::printStackTrace
                 );
     }
 
-    public void loadPinnedArticlesFromDB(LoadArticlesCallback loadArticlesCallback) {
+    public void loadPinnedArticlesFromDB(OnArticlesLoadedCallback onArticlesLoadedCallback) {
         Observable.fromCallable(() -> {
             ArrayList<ArticleField> articleFields = new ArrayList<>();
             Cursor cursor
                     = dbHelper.getReadableDatabase().query(ArticlesTable.PINNED_ARTICLES_TABLE, null, null, null, null, null, null);
             while (cursor.moveToNext()) {
                 ArticleFieldBaseImpl article = new ArticleFieldBaseImpl();
-                article.setId(String.valueOf(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.ARTICLE_ID))));
+                article.setId(String.valueOf(cursor.getLong(cursor.getColumnIndex(ArticlesTable.COLUMN.ID))));
+                article.setArticleId(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.ARTICLE_ID)));
                 article.setTitle(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.TITLE)));
                 article.setCategory(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.CATEGORY)));
                 article.setThumbnail(cursor.getString(cursor.getColumnIndex(ArticlesTable.COLUMN.THUMBNAIL)));
@@ -87,7 +89,7 @@ public class ArticlesModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        loadArticlesCallback::onLoad,
+                        onArticlesLoadedCallback::onLoad,
                         Throwable::printStackTrace
                 );
     }

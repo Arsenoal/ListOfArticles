@@ -6,7 +6,10 @@ import android.content.Context;
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.common.db.ArticlesTable;
 import com.arsen.listofarticles.database.DbHelper;
+import com.arsen.listofarticles.interfaces.OnArticleLoadedCallback;
+import com.arsen.listofarticles.interfaces.OnArticlesLoadedCallback;
 import com.arsen.listofarticles.interfaces.OnCompletedCallback;
+import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.rest.services.ArticlesService;
 
 import java.util.concurrent.TimeUnit;
@@ -36,6 +39,19 @@ public class ArticleSingleModel {
 
     public void loadData(Disposable disposable) {
         compositeDisposable.add(disposable);
+    }
+
+    public void loadArticleFromDB(OnArticleLoadedCallback onArticleLoadedCallback, String dbID) {
+        Observable.fromCallable(() -> {
+            long id = Long.valueOf(dbID);
+            return dbHelper.getArticleViaID(id);
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        onArticleLoadedCallback::onLoad,
+                        Throwable::printStackTrace
+                );
     }
 
     public ArticlesService getArticlesService() {
