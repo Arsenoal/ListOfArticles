@@ -2,6 +2,7 @@ package com.arsen.listofarticles.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,10 +28,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArticlesViewActivity
+public class ArticlesListActivity
         extends AppCompatActivity implements ArticlesView {
 
-    private final static Logger LOGGER = Logger.getLogger(ArticlesViewActivity.class.getSimpleName());
+    private final static Logger LOGGER = Logger.getLogger(ArticlesListActivity.class.getSimpleName());
 
     @BindView(R.id.articles_list)
     RecyclerView articlesList;
@@ -116,6 +117,11 @@ public class ArticlesViewActivity
     }
 
     @Override
+    public void addPinnedArticle(ArticleField article) {
+        pinnedArticlesAdapter.addArticle(article);
+    }
+
+    @Override
     public void invalidate() {
         if (endlessRecyclerViewScrollListener != null)
             endlessRecyclerViewScrollListener.resetState();
@@ -133,6 +139,12 @@ public class ArticlesViewActivity
         pinnedArticlesAdapter
                 .getArticleOnItemClick()
                 .subscribe(pair -> articlesPresenter.articleClicked(pair));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        articlesPresenter.updatePinnedArticles();
     }
 
     @Override

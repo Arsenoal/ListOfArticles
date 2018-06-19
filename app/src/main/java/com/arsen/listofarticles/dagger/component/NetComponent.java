@@ -1,7 +1,7 @@
 package com.arsen.listofarticles.dagger.component;
 
 import com.arsen.listofarticles.activity.ArticleSingleViewActivity;
-import com.arsen.listofarticles.activity.ArticlesViewActivity;
+import com.arsen.listofarticles.activity.ArticlesListActivity;
 import com.arsen.listofarticles.dagger.module.AppModule;
 import com.arsen.listofarticles.dagger.module.DBModule;
 import com.arsen.listofarticles.dagger.module.ModelsModule;
@@ -36,7 +36,7 @@ public interface NetComponent {
     void inject(ArticleSingleModel articleSingleModel);
 
     //views
-    void inject(ArticlesViewActivity articlesViewActivity);
+    void inject(ArticlesListActivity articlesListActivity);
 
     void inject(ArticleSingleViewActivity articleSingleViewActivity);
 }

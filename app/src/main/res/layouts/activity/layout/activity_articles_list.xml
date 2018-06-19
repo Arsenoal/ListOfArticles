@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_color_white"
-    tools:context="com.arsen.listofarticles.activity.ArticlesViewActivity">
+    tools:context="com.arsen.listofarticles.activity.ArticlesListActivity">
 
     <com.arsen.listofarticles.widgets.HorizontalRecyclerView
         android:id="@+id/pinned_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/app_margin_end"
+        android:layout_marginTop="@dimen/app_margin_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/app_margin_top"
-        android:layout_marginEnd="@dimen/app_margin_end"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/articles_list"

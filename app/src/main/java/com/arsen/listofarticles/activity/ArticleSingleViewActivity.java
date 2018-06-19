@@ -131,8 +131,8 @@ public class ArticleSingleViewActivity extends AppCompatActivity implements Arti
 
     @Override
     public void successfullyPinned() {
-        Snackbar.make(rootView, successfullyPinned, Snackbar.LENGTH_SHORT).show();
-        pinToDashboard.setClickable(true);
+        articleSinglePresenter.detachView();
+        onBackPressed();
     }
 
     @Override

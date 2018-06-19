@@ -19,7 +19,6 @@ import com.arsen.listofarticles.util.Constants;
 import com.arsen.listofarticles.util.helper.NetworkHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +38,8 @@ public class ArticlesPresenter {
 
     private ArticlesView articlesView;
     private AppCompatActivity activity;
+
+    private ArrayList<ArticleField> pinnedArticles;
 
     public void attachView(ArticlesView articlesView) {
         this.articlesView = articlesView;
@@ -96,7 +97,18 @@ public class ArticlesPresenter {
     }
 
     private void loadPinnedArticles() {
-        articlesModel.loadPinnedArticlesFromDB(articles -> articlesView.addPinnedArticles(articles));
+        articlesModel.loadPinnedArticlesFromDB(articles -> {
+            this.pinnedArticles = new ArrayList<>();
+            this.pinnedArticles.addAll(articles);
+            articlesView.addPinnedArticles(articles);
+        });
+    }
+
+    public void updatePinnedArticles() {
+        articlesModel.loadPinnedArticlesFromDB(articles -> {
+            if (ArticlesPresenter.this.pinnedArticles.size() < articles.size())
+                articlesView.addPinnedArticle(articles.get(articles.size() - 1));
+        });
     }
 
     private void addArticleToDb(ArrayList<? extends ArticleField> articles) {
