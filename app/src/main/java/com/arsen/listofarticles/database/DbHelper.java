@@ -41,10 +41,10 @@ public class DbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public ArticleField getArticleViaID(long id) {
+    public ArticleField getArticleViaID(String tabelName, long id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query =
-                String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE %s = \"%s\"", ArticlesTable.ARTICLES_TABLE, ArticlesTable.COLUMN.ID, id);
+                String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE %s = \"%s\"", tabelName, ArticlesTable.COLUMN.ID, id);
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();

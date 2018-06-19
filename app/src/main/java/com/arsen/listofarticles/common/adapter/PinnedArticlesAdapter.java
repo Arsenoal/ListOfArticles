@@ -6,14 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
-import com.arsen.listofarticles.util.Trio;
+import com.arsen.listofarticles.util.Constants;
+import com.arsen.listofarticles.util.Quad;
 import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,7 +30,7 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
 
     private ArrayList<ArticleField> pinnedArticles;
     private AppCompatActivity appCompatActivity;
-    private PublishSubject<Trio<String, String, AppCompatImageView>> onClickSubject;
+    private PublishSubject<Quad<String, String, String, AppCompatImageView>> onClickSubject;
     private final int DP_120;
 
     @Override
@@ -83,7 +83,7 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
                     articleImage.setImageResource(R.drawable.ic_android);
             }
 
-            itemView.setOnClickListener(v -> onClickSubject.onNext(new Trio<>(articleField.getArticleId(), articleField.getId(), articleImage)));
+            itemView.setOnClickListener(v -> onClickSubject.onNext(new Quad<>(articleField.getArticleId(), articleField.getId(), Constants.PINNED_ARTICLE, articleImage)));
         }
     }
 
@@ -115,7 +115,7 @@ public class PinnedArticlesAdapter extends RecyclerView.Adapter<PinnedArticlesAd
         notifyItemInserted(pinnedArticles.size() - 1);
     }
 
-    public Observable<Trio<String, String, AppCompatImageView>> getArticleOnItemClick() {
+    public Observable<Quad<String, String, String, AppCompatImageView>> getArticleOnItemClick() {
         return onClickSubject.as(upstream -> upstream);
     }
 

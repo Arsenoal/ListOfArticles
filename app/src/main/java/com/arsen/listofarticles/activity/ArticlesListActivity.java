@@ -124,7 +124,11 @@ public class ArticlesListActivity
 
     @Override
     public void setupNotificationsService() {
-        startService(new Intent(this, NotificationsService.class));
+        try {
+            startService(new Intent(this, NotificationsService.class));
+        } catch (IllegalStateException ignored) {
+            //android oreo case
+        }
     }
 
     private void setupInfiniteScroll() {

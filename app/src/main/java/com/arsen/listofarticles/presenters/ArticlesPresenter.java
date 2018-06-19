@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
-import android.util.Pair;
 
 import com.arsen.listofarticles.App;
 import com.arsen.listofarticles.activity.ArticleSingleViewActivity;
@@ -16,7 +15,7 @@ import com.arsen.listofarticles.models.ArticlesModel;
 import com.arsen.listofarticles.rest.models.FilmsResponse;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
 import com.arsen.listofarticles.util.Constants;
-import com.arsen.listofarticles.util.Trio;
+import com.arsen.listofarticles.util.Quad;
 import com.arsen.listofarticles.util.helper.NetworkHelper;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.arsen.listofarticles.util.Constants.ARTICLE_DB_ID_KEY;
 import static com.arsen.listofarticles.util.Constants.ARTICLE_ID_KEY;
+import static com.arsen.listofarticles.util.Constants.ARTICLE_TYPE_KEY;
 import static com.arsen.listofarticles.util.Constants.LIST_UPDATE_TIME;
 
 public class ArticlesPresenter {
@@ -184,15 +184,17 @@ public class ArticlesPresenter {
         }, cv);
     }
 
-    public void articleClicked(Trio<String, String, AppCompatImageView> trio) {
-        String articleId = trio.first;
-        String articleDbId = trio.second;
-        AppCompatImageView articleImage = trio.third;
+    public void articleClicked(Quad<String, String, String, AppCompatImageView> quad) {
+        String articleId = quad.first;
+        String articleDbId = quad.second;
+        String articleType = quad.third;
+        AppCompatImageView articleImage = quad.fourth;
 
         Intent intent = new Intent(activity, ArticleSingleViewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(ARTICLE_ID_KEY, articleId);
         intent.putExtra(ARTICLE_DB_ID_KEY, articleDbId);
+        intent.putExtra(ARTICLE_TYPE_KEY, articleType);
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(activity, articleImage, "article");
         activity.startActivity(intent, options.toBundle());

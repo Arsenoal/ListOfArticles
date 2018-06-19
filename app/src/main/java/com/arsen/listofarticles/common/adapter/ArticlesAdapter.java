@@ -13,7 +13,8 @@ import android.view.ViewGroup;
 
 import com.arsen.listofarticles.R;
 import com.arsen.listofarticles.rest.models.interfaces.ArticleField;
-import com.arsen.listofarticles.util.Trio;
+import com.arsen.listofarticles.util.Constants;
+import com.arsen.listofarticles.util.Quad;
 import com.arsen.listofarticles.util.helper.ScreenHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,7 +31,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     private ArrayList<ArticleField> articles;
     private AppCompatActivity appCompatActivity;
     private final int DP_150;
-    private final PublishSubject<Trio<String, String, AppCompatImageView>> onClickSubject;
+    private final PublishSubject<Quad<String, String, String, AppCompatImageView>> onClickSubject;
 
     public ArticlesAdapter() {
         this.articles = new ArrayList<>();
@@ -96,7 +97,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
             if (category != null) articleCategory.setText(category);
 
 
-            rootView.setOnClickListener(v -> onClickSubject.onNext(new Trio<>(article.getArticleId(), article.getId(), articleImage)));
+            rootView.setOnClickListener(v -> onClickSubject.onNext(new Quad<>(article.getArticleId(), article.getId(), Constants.LIST_ARTICLE, articleImage)));
         }
     }
 
@@ -133,7 +134,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         notifyDataSetChanged();
     }
 
-    public Observable<Trio<String, String, AppCompatImageView>> getArticleIdOnItemClick() {
+    public Observable<Quad<String, String, String, AppCompatImageView>> getArticleIdOnItemClick() {
         return onClickSubject.as(upstream -> upstream);
     }
 }

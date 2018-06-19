@@ -41,10 +41,10 @@ public class ArticleSingleModel {
         compositeDisposable.add(disposable);
     }
 
-    public void loadArticleFromDB(OnArticleLoadedCallback onArticleLoadedCallback, String dbID) {
+    public void loadArticleFromDB(OnArticleLoadedCallback onArticleLoadedCallback, String tableName, String dbID) {
         Observable.fromCallable(() -> {
             long id = Long.valueOf(dbID);
-            return dbHelper.getArticleViaID(id);
+            return dbHelper.getArticleViaID(tableName, id);
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -17,4 +17,8 @@ public final class Constants {
 
     public final static String ARTICLE_ID_KEY = "article_id";
     public final static String ARTICLE_DB_ID_KEY = "article_id_db";
+    public final static String ARTICLE_TYPE_KEY = "article_type";
+
+    public final static String PINNED_ARTICLE = "pinned_article";
+    public final static String LIST_ARTICLE = "list_article";
 }

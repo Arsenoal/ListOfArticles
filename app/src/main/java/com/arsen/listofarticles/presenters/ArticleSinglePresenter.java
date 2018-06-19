@@ -20,6 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.arsen.listofarticles.util.Constants.ARTICLE_DB_ID_KEY;
 import static com.arsen.listofarticles.util.Constants.ARTICLE_ID_KEY;
+import static com.arsen.listofarticles.util.Constants.ARTICLE_TYPE_KEY;
 
 public class ArticleSinglePresenter {
 
@@ -31,19 +32,21 @@ public class ArticleSinglePresenter {
     private AppCompatActivity appCompatActivity;
     private String ID;
     private String dbID;
+    private String articleType;
 
     public void attachView(ArticleSingleView articleSingleView) {
         this.articleSingleView = articleSingleView;
         this.appCompatActivity = (AppCompatActivity) articleSingleView.provideContext();
 
+        prepare();
         ((App) appCompatActivity.getApplication()).getNetComponent().inject(this);
-        initId();
     }
 
-    private void initId() {
+    private void prepare() {
         Intent intent = appCompatActivity.getIntent();
         ID = intent.getStringExtra(ARTICLE_ID_KEY);
         dbID = intent.getStringExtra(ARTICLE_DB_ID_KEY);
+        articleType = intent.getStringExtra(ARTICLE_TYPE_KEY);
     }
 
     public void detachView() {
@@ -54,8 +57,17 @@ public class ArticleSinglePresenter {
     public void startLoading() {
         if (NetworkHelper.isNetworkAvailable(appCompatActivity))
             loadArticle();
-        else
-            loadArticleFromDB(dbID);
+        else {
+            switch (articleType) {
+                case Constants.LIST_ARTICLE:
+                    loadArticleFromDB(ArticlesTable.ARTICLES_TABLE, dbID);
+                    break;
+                case Constants.PINNED_ARTICLE:
+                    loadArticleFromDB(ArticlesTable.PINNED_ARTICLES_TABLE, dbID);
+                    break;
+
+            }
+        }
     }
 
     private void loadArticle() {
@@ -78,11 +90,11 @@ public class ArticleSinglePresenter {
         );
     }
 
-    private void loadArticleFromDB(String dbID) {
+    private void loadArticleFromDB(String tableName, String dbID) {
         articleSingleModel.loadArticleFromDB(article -> {
             articleField = article;
             articleSingleView.loadData(articleField);
-        }, dbID);
+        }, tableName, dbID);
     }
 
     public void pinArticle() {
